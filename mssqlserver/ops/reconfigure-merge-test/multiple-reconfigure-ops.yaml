@@ -16,6 +16,9 @@ spec:
   apply: IfReady
 ---
 
+
+
+
 apiVersion: ops.kubedb.com/v1alpha1
 kind: MSSQLServerOpsRequest
 metadata:
@@ -58,9 +61,8 @@ spec:
 # mssql.conf: |-
 #   [memory]
 #   memorylimitmb = 2096
+
 ---
-
-
 
 
 apiVersion: ops.kubedb.com/v1alpha1
@@ -97,6 +99,8 @@ spec:
 # apply:
 #   [network]
 #   tcpport = 1433
+
+
 ---
 
 
