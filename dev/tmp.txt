@@ -1,23 +1,5 @@
 
 
-Merge Those Reconfigure Ops Phase is Pending or empty ("").
-
-Requests in Successful/Failed/Skipped are ignored.
-
-If any request for the same DB is Progressing (other than the current), skip now and with requeue 
-
-Mark all earlier items in that group as Skipped (status is patched to Phase=Skipped with a condition (reasion for skipping is this config is merged in another ops requests)
-
-
-
-If the selected name != current request name, SkipOpsReq returns true (skip current; controller requeues it after 30s).
-If it matches, return false (current may proceed)
-
-
-
-
-
-
 
 db container security context as:
 securityContext:
