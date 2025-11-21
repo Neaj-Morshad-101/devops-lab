@@ -1,7 +1,7 @@
 apiVersion: kubedb.com/v1alpha2
 kind: MSSQLServer
 metadata:
-  name: ag
+  name: ms-cluster
   namespace: demo
 spec:
   version: "2022-cu19"
@@ -76,10 +76,10 @@ spec:
   #     ports:
   #       - name: endpoint
   #         port: 5022
-  init:
-    script:
-      configMap:
-        name: mssql-init-scripts
+  # init:
+  #   script:
+  #     configMap:
+  #       name: mssql-init-scripts
   storageType: Durable
   storage:
     # storageClassName: "longhorn"
