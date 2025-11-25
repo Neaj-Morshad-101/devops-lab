@@ -4,6 +4,14 @@ metadata:
   name: ms-even-cluster
   namespace: demo
 spec:
+  arbiter:
+    resources:
+      limits:
+        memory: 256Mi
+      requests:
+        cpu: 200m
+        memory: 256Mi
+        storage: 1Gi
   version: "2022-cu16"
   replicas: 2
   topology:

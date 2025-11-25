@@ -1,0 +1,349 @@
+ms-cluster-0,101
+ms-cluster-1,101
+ms-cluster-2,101
+
+
+➤ kubectl get msops -n demo | grep -i Successful | wc -lc
+    100    5156
+neaj@neaj-pc:~/g/s/g/N/n/k/un-necessary-restart-issue|main⚡*?
+➤ 
+
+➤ kubectl get msops -n demo | grep -i skipped | wc -lc
+      0       0
+neaj@neaj-pc:~/g/s/g/N/n/k/un-necessary-restart-issue|main⚡*?
+➤ kubectl get msops -n demo | grep -i Failed | wc -lc
+      0       0
+neaj@neaj-pc:~/g/s/g/N/n/k/un-necessary-restart-issue|main⚡*?
+➤ 
+
+
+
+
+All OpsRequests applied. Aggregating UID counts...
+Pod creations (unique UIDs per pod):
+ms-cluster-0  101: 
+ms-cluster-1  101: 
+ms-cluster-2  101: 
+
+Expected creations per pod (if one recreation per OpsRequest): 101
+
+Results saved to: ./mssql-restart-uid-output (snapshots and ./mssql-restart-uid-output/pod-uid-aggregate.txt)
+Done.
+neaj@neaj
+
+
+neaj@neaj-pc:~/g/s/g/N/n/k/un-necessary-restart-issue|main⚡*?
+➤ ./mssql-restart-load-test.sh 
+Config: N=100 NAMESPACE=demo DB_NAME=ms-cluster POD_PREFIX=ms-cluster
+Minimal snapshots will be saved to: ./mssql-restart-uid-output/snapshots
+[1/100] preparing mssqlops-restart-1
+[1/100] creating mssqlops-restart-1
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-1 created
+[2/100] preparing mssqlops-restart-2
+[2/100] creating mssqlops-restart-2
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-2 created
+[3/100] preparing mssqlops-restart-3
+[3/100] creating mssqlops-restart-3
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-3 created
+[4/100] preparing mssqlops-restart-4
+[4/100] creating mssqlops-restart-4
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-4 created
+[5/100] preparing mssqlops-restart-5
+[5/100] creating mssqlops-restart-5
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-5 created
+[6/100] preparing mssqlops-restart-6
+[6/100] creating mssqlops-restart-6
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-6 created
+[7/100] preparing mssqlops-restart-7
+[7/100] creating mssqlops-restart-7
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-7 created
+[8/100] preparing mssqlops-restart-8
+[8/100] creating mssqlops-restart-8
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-8 created
+[9/100] preparing mssqlops-restart-9
+[9/100] creating mssqlops-restart-9
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-9 created
+[10/100] preparing mssqlops-restart-10
+[10/100] creating mssqlops-restart-10
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-10 created
+[11/100] preparing mssqlops-restart-11
+[11/100] creating mssqlops-restart-11
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-11 created
+[12/100] preparing mssqlops-restart-12
+[12/100] creating mssqlops-restart-12
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-12 created
+[13/100] preparing mssqlops-restart-13
+[13/100] creating mssqlops-restart-13
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-13 created
+[14/100] preparing mssqlops-restart-14
+[14/100] creating mssqlops-restart-14
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-14 created
+[15/100] preparing mssqlops-restart-15
+[15/100] creating mssqlops-restart-15
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-15 created
+[16/100] preparing mssqlops-restart-16
+[16/100] creating mssqlops-restart-16
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-16 created
+[17/100] preparing mssqlops-restart-17
+[17/100] creating mssqlops-restart-17
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-17 created
+[18/100] preparing mssqlops-restart-18
+[18/100] creating mssqlops-restart-18
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-18 created
+[19/100] preparing mssqlops-restart-19
+[19/100] creating mssqlops-restart-19
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-19 created
+[20/100] preparing mssqlops-restart-20
+[20/100] creating mssqlops-restart-20
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-20 created
+[21/100] preparing mssqlops-restart-21
+[21/100] creating mssqlops-restart-21
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-21 created
+[22/100] preparing mssqlops-restart-22
+[22/100] creating mssqlops-restart-22
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-22 created
+[23/100] preparing mssqlops-restart-23
+[23/100] creating mssqlops-restart-23
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-23 created
+[24/100] preparing mssqlops-restart-24
+[24/100] creating mssqlops-restart-24
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-24 created
+[25/100] preparing mssqlops-restart-25
+[25/100] creating mssqlops-restart-25
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-25 created
+[26/100] preparing mssqlops-restart-26
+[26/100] creating mssqlops-restart-26
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-26 created
+[27/100] preparing mssqlops-restart-27
+[27/100] creating mssqlops-restart-27
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-27 created
+[28/100] preparing mssqlops-restart-28
+[28/100] creating mssqlops-restart-28
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-28 created
+[29/100] preparing mssqlops-restart-29
+[29/100] creating mssqlops-restart-29
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-29 created
+[30/100] preparing mssqlops-restart-30
+[30/100] creating mssqlops-restart-30
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-30 created
+[31/100] preparing mssqlops-restart-31
+[31/100] creating mssqlops-restart-31
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-31 created
+[32/100] preparing mssqlops-restart-32
+[32/100] creating mssqlops-restart-32
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-32 created
+[33/100] preparing mssqlops-restart-33
+[33/100] creating mssqlops-restart-33
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-33 created
+[34/100] preparing mssqlops-restart-34
+[34/100] creating mssqlops-restart-34
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-34 created
+[35/100] preparing mssqlops-restart-35
+[35/100] creating mssqlops-restart-35
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-35 created
+[36/100] preparing mssqlops-restart-36
+[36/100] creating mssqlops-restart-36
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-36 created
+[37/100] preparing mssqlops-restart-37
+[37/100] creating mssqlops-restart-37
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-37 created
+[38/100] preparing mssqlops-restart-38
+[38/100] creating mssqlops-restart-38
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-38 created
+[39/100] preparing mssqlops-restart-39
+[39/100] creating mssqlops-restart-39
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-39 created
+[40/100] preparing mssqlops-restart-40
+[40/100] creating mssqlops-restart-40
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-40 created
+[41/100] preparing mssqlops-restart-41
+[41/100] creating mssqlops-restart-41
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-41 created
+[42/100] preparing mssqlops-restart-42
+[42/100] creating mssqlops-restart-42
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-42 created
+[43/100] preparing mssqlops-restart-43
+[43/100] creating mssqlops-restart-43
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-43 created
+[44/100] preparing mssqlops-restart-44
+[44/100] creating mssqlops-restart-44
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-44 created
+[45/100] preparing mssqlops-restart-45
+[45/100] creating mssqlops-restart-45
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-45 created
+[46/100] preparing mssqlops-restart-46
+[46/100] creating mssqlops-restart-46
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-46 created
+[47/100] preparing mssqlops-restart-47
+[47/100] creating mssqlops-restart-47
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-47 created
+[48/100] preparing mssqlops-restart-48
+[48/100] creating mssqlops-restart-48
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-48 created
+[49/100] preparing mssqlops-restart-49
+[49/100] creating mssqlops-restart-49
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-49 created
+[50/100] preparing mssqlops-restart-50
+[50/100] creating mssqlops-restart-50
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-50 created
+[51/100] preparing mssqlops-restart-51
+[51/100] creating mssqlops-restart-51
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-51 created
+[52/100] preparing mssqlops-restart-52
+[52/100] creating mssqlops-restart-52
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-52 created
+[53/100] preparing mssqlops-restart-53
+[53/100] creating mssqlops-restart-53
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-53 created
+[54/100] preparing mssqlops-restart-54
+[54/100] creating mssqlops-restart-54
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-54 created
+[55/100] preparing mssqlops-restart-55
+[55/100] creating mssqlops-restart-55
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-55 created
+[56/100] preparing mssqlops-restart-56
+[56/100] creating mssqlops-restart-56
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-56 created
+[57/100] preparing mssqlops-restart-57
+[57/100] creating mssqlops-restart-57
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-57 created
+[58/100] preparing mssqlops-restart-58
+[58/100] creating mssqlops-restart-58
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-58 created
+[59/100] preparing mssqlops-restart-59
+[59/100] creating mssqlops-restart-59
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-59 created
+[60/100] preparing mssqlops-restart-60
+[60/100] creating mssqlops-restart-60
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-60 created
+[61/100] preparing mssqlops-restart-61
+[61/100] creating mssqlops-restart-61
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-61 created
+[62/100] preparing mssqlops-restart-62
+[62/100] creating mssqlops-restart-62
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-62 created
+[63/100] preparing mssqlops-restart-63
+[63/100] creating mssqlops-restart-63
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-63 created
+[64/100] preparing mssqlops-restart-64
+[64/100] creating mssqlops-restart-64
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-64 created
+[65/100] preparing mssqlops-restart-65
+[65/100] creating mssqlops-restart-65
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-65 created
+[66/100] preparing mssqlops-restart-66
+[66/100] creating mssqlops-restart-66
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-66 created
+[67/100] preparing mssqlops-restart-67
+[67/100] creating mssqlops-restart-67
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-67 created
+[68/100] preparing mssqlops-restart-68
+[68/100] creating mssqlops-restart-68
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-68 created
+[69/100] preparing mssqlops-restart-69
+[69/100] creating mssqlops-restart-69
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-69 created
+[70/100] preparing mssqlops-restart-70
+[70/100] creating mssqlops-restart-70
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-70 created
+[71/100] preparing mssqlops-restart-71
+[71/100] creating mssqlops-restart-71
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-71 created
+[72/100] preparing mssqlops-restart-72
+[72/100] creating mssqlops-restart-72
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-72 created
+[73/100] preparing mssqlops-restart-73
+[73/100] creating mssqlops-restart-73
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-73 created
+[74/100] preparing mssqlops-restart-74
+[74/100] creating mssqlops-restart-74
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-74 created
+[75/100] preparing mssqlops-restart-75
+[75/100] creating mssqlops-restart-75
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-75 created
+[76/100] preparing mssqlops-restart-76
+[76/100] creating mssqlops-restart-76
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-76 created
+[77/100] preparing mssqlops-restart-77
+[77/100] creating mssqlops-restart-77
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-77 created
+[78/100] preparing mssqlops-restart-78
+[78/100] creating mssqlops-restart-78
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-78 created
+[79/100] preparing mssqlops-restart-79
+[79/100] creating mssqlops-restart-79
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-79 created
+[80/100] preparing mssqlops-restart-80
+[80/100] creating mssqlops-restart-80
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-80 created
+[81/100] preparing mssqlops-restart-81
+[81/100] creating mssqlops-restart-81
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-81 created
+[82/100] preparing mssqlops-restart-82
+[82/100] creating mssqlops-restart-82
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-82 created
+[83/100] preparing mssqlops-restart-83
+[83/100] creating mssqlops-restart-83
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-83 created
+[84/100] preparing mssqlops-restart-84
+[84/100] creating mssqlops-restart-84
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-84 created
+[85/100] preparing mssqlops-restart-85
+[85/100] creating mssqlops-restart-85
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-85 created
+[86/100] preparing mssqlops-restart-86
+[86/100] creating mssqlops-restart-86
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-86 created
+[87/100] preparing mssqlops-restart-87
+[87/100] creating mssqlops-restart-87
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-87 created
+[88/100] preparing mssqlops-restart-88
+[88/100] creating mssqlops-restart-88
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-88 created
+[89/100] preparing mssqlops-restart-89
+[89/100] creating mssqlops-restart-89
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-89 created
+[90/100] preparing mssqlops-restart-90
+[90/100] creating mssqlops-restart-90
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-90 created
+[91/100] preparing mssqlops-restart-91
+[91/100] creating mssqlops-restart-91
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-91 created
+[92/100] preparing mssqlops-restart-92
+[92/100] creating mssqlops-restart-92
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-92 created
+[93/100] preparing mssqlops-restart-93
+[93/100] creating mssqlops-restart-93
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-93 created
+[94/100] preparing mssqlops-restart-94
+[94/100] creating mssqlops-restart-94
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-94 created
+[95/100] preparing mssqlops-restart-95
+[95/100] creating mssqlops-restart-95
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-95 created
+[96/100] preparing mssqlops-restart-96
+[96/100] creating mssqlops-restart-96
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-96 created
+[97/100] preparing mssqlops-restart-97
+[97/100] creating mssqlops-restart-97
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-97 created
+[98/100] preparing mssqlops-restart-98
+[98/100] creating mssqlops-restart-98
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-98 created
+[99/100] preparing mssqlops-restart-99
+[99/100] creating mssqlops-restart-99
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-99 created
+[100/100] preparing mssqlops-restart-100
+[100/100] creating mssqlops-restart-100
+mssqlserveropsrequest.ops.kubedb.com/mssqlops-restart-100 created
+All OpsRequests applied. Aggregating UID counts...
+Pod creations (unique UIDs per pod):
+ms-cluster-0  101: 
+ms-cluster-1  101: 
+ms-cluster-2  101: 
+
+Expected creations per pod (if one recreation per OpsRequest): 101
+
+Results saved to: ./mssql-restart-uid-output (snapshots and ./mssql-restart-uid-output/pod-uid-aggregate.txt)
+Done.
+neaj@neaj

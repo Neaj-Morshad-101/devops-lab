@@ -1,0 +1,19 @@
+Responsible for DBs:
+development (primary):
+mssql
+proxysql 
+
+memcached
+ignite 
+rabbitmq
+
+secondary (review):
+redis
+
+mysql 
+mariadb
+perconaxtradb
+
+hanadb 
+qdrant
+milvus
