@@ -1,0 +1,64 @@
+apiVersion: kubedb.com/v1alpha2
+kind: MSSQLServer
+metadata:
+  name: gitops
+  namespace: demo
+spec:
+  version: "2022-cu19"
+  replicas: 3
+  arbiter:
+    resources:
+      limits:
+        memory: 256Mi
+      requests:
+        cpu: 200m
+        memory: 256Mi
+        storage: 1Gi
+  topology:
+    mode: AvailabilityGroup
+    availabilityGroup: 
+      databases:
+        - agdb
+        - mssql
+      secondaryAccessMode: "All"
+  tls:
+    issuerRef:
+      name: mssqlserver-ca-issuer
+      kind: Issuer
+      apiGroup: "cert-manager.io"
+    clientTLS: false
+  podTemplate:
+    spec:
+      containers:
+      - name: mssql
+        env:
+        - name: ACCEPT_EULA
+          value: "Y"
+        - name: MSSQL_PID
+          value: Evaluation
+      # - name: mssql-coordinator
+      #   env:
+      #   - name: GODEBUG
+      #     value: "x509negativeserial=1"
+  # serviceTemplates:
+  # - alias: primary
+  #   spec:
+  #     type: ClusterIP
+  #     ports:
+  #       - name: endpoint
+  #         port: 5022
+  # init:
+  #   script:
+  #     configMap:
+  #       name: mssql-init-scripts
+  storageType: Durable
+  storage:
+    # storageClassName: "longhorn"
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 1Gi
+  deletionPolicy: WipeOut
+
+  

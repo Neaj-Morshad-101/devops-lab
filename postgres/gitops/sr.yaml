@@ -1,0 +1,89 @@
+apiVersion: gitops.kubedb.com/v1alpha1
+kind: Postgres
+metadata:
+  name: grafana-db
+  namespace: demo
+spec:
+  # allowedSchemas:
+  #   namespaces:
+  #     from: Same
+  # authSecret:
+  #   apiGroup: ""
+  #   externallyManaged: true
+  #   kind: Secret
+  #   name: grafana-db-auth
+  arbiter:
+    resources:
+      limits:
+        memory: 256Mi
+      requests:
+        cpu: 200m
+        memory: 256Mi
+        storage: 1Gi
+  deletionPolicy: Delete
+  healthChecker:
+    failureThreshold: 1
+    periodSeconds: 10
+    timeoutSeconds: 10
+  # monitor:
+  #   agent: prometheus.io/operator
+  #   prometheus:
+  #     exporter:
+  #       args:
+  #       - --no-collector.stat_bgwriter
+  #       port: 56790
+  #     serviceMonitor:
+  #       labels:
+  #         release: prometheus
+  podTemplate:
+    spec:
+      containers:
+      - name: postgres
+        resources:
+          limits:
+            memory: 256Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+      - name: pg-coordinator
+        resources:
+          limits:
+            memory: 128Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
+      initContainers:
+      - name: postgres-init-container
+        resources:
+          limits:
+            memory: 128Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
+      podPlacementPolicy:
+        name: default
+  replicas: 2
+  # sslMode: require
+  standbyMode: Hot
+  storage:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 5Gi
+  storageType: Durable
+  # tls:
+  #   certificates:
+  #   - alias: server
+  #     dnsNames:
+  #     - localhost
+  #     ipAddresses:
+  #     - 127.0.0.1
+  #     subject:
+  #       organizations:
+  #       - kubedb:server
+  #   issuerRef:
+  #     apiGroup: cert-manager.io
+  #     kind: Issuer
+  #     name: grafana-postgres-ca-issuer
+  version: "17.5"
