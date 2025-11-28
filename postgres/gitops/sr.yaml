@@ -19,7 +19,7 @@ spec:
       requests:
         cpu: 200m
         memory: 256Mi
-        storage: 1Gi
+        storage: 10Gi
   deletionPolicy: Delete
   healthChecker:
     failureThreshold: 2
