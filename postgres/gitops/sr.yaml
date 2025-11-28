@@ -22,7 +22,7 @@ spec:
         storage: 1Gi
   deletionPolicy: Delete
   healthChecker:
-    failureThreshold: 1
+    failureThreshold: 2
     periodSeconds: 10
     timeoutSeconds: 10
   # monitor:
