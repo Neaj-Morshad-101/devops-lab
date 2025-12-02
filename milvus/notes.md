@@ -1,3 +1,7 @@
+Check this for milvus dependencies’ recommended charts: 
+https://artifacthub.io/packages/helm/milvus-helm/milvus
+
+
 Follow the official helm chart:
 Standalone:
 - use pvc for milvus standalone pod
