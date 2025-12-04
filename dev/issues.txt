@@ -1,8 +1,14 @@
+E1204 12:26:56.343157       1 reconcile.go:68] "Failed to ensure volume expansion" err="status field not found" logger="postgres" controller="gitops-postgres" controllerGroup="gitops.kubedb.com" controllerKind="Postgres" Postgres="demo/grafana-db" namespace="demo" name="grafana-db" reconcileID="64d7a8af-4fb9-4b64-895a-82f2f5c693b1"
+E1204 12:26:56.343201       1 controller.go:341] "Reconciler error" err="status field not found" controller="gitops-postgres" controllerGroup="gitops.kubedb.com" controllerKind="Postgres" Postgres="demo/grafana-db" namespace="demo" name="grafana-db" reconcileID="64d7a8af-4fb9-4b64-895a-82f2f5c693b1"
+
+
+
+
+
 E1202 13:12:00.295779       1 reconcile.go:148] "Failed to create ops requests" err="admission webhook \"postgresopsrequestwebhook.validators.ops.kubedb.com\" denied the request: PostgresOpsRequest.Postgresopsrequests.kubedb.com \"grafana-db-volumeexpansion-23802g\" is invalid: spec.volumeExpansion: Invalid value: \"grafana-db-volumeexpansion-23802g\": `.Spec.VolumeExpansion` field is nil" logger="postgres" controller="gitops-postgres" controllerGroup="gitops.kubedb.com" controllerKind="Postgres" Postgres="demo/grafana-db" namespace="demo" name="grafana-db" reconcileID="6643ab23-8abf-4538-90cf-5c85b280aa0d"
 
 
 E1202 13:12:00.295823       1 controller.go:341] "Reconciler error" err="admission webhook \"postgresopsrequestwebhook.validators.ops.kubedb.com\" denied the request: PostgresOpsRequest.Postgresopsrequests.kubedb.com \"grafana-db-volumeexpansion-23802g\" is invalid: spec.volumeExpansion: Invalid value: \"grafana-db-volumeexpansion-23802g\": `.Spec.VolumeExpansion` field is nil" controller="gitops-postgres" controllerGroup="gitops.kubedb.com" controllerKind="Postgres" Postgres="demo/grafana-db" namespace="demo" name="grafana-db" reconcileID="6643ab23-8abf-4538-90cf-5c85b280aa0d"
-
 
 
 
