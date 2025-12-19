@@ -8,6 +8,10 @@ git restore --staged <file>
 git restore --staged .
 ```
 
+# Go 
+autofix linter issues:
+`golangci-lint run --enable unparam --max-same-issues=100 --timeout=10m --fix`
+
 
 # Kubernetes 
 pod logs:
