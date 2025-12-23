@@ -1,0 +1,23 @@
+provitioning:
+normal (worked)
+with secret + apply: (testing...)
+
+reconfigure behavior:
+This is the finalized behaviour (Giving all combinations of remove, apply, and configSecret is allowed):
+
+if RemoveCustomConfig is true:
+No applyConfig and ConfigSecret are given: Remove the previous custom configurations (applyConfig and configSecret)
+Only applyConfig is given: Remove previously used custom configurations, and use the configuration given in the applyConfig.
+configSecret is given: Remove previously used custom configurations, and use the configuration given in the configSecret.
+apply + config secret is given: merge 
+
+If RemoveCustomConfig is false:
+Only applyConfig is given: keep the previous custom config if it exists. Merge the applyConfig with the previous applyConfig if it exists. Otherwise, just use the given applyConfig, keep these configs in the DB CR, also in -uid[6] secret (for mounting to pods).
+Only configSecret is given: Use the newly given configSecret as the custom config secret. Keep the previous applyConfigs as well.
+config + apply: Allowed. Use both. For merging, give priority to applyconfig.
+
+
+
+New mssql version test: 
+standalone 2022-cu22 (ok)  2025-cu0 (testing)
+ag cu22 cu0 (testing all)
