@@ -1,0 +1,24 @@
+apiVersion: minio.min.io/v2
+kind: Tenant
+metadata:
+  name: minio-tenant
+  namespace: minio
+spec:
+  # number of MinIO pods
+  replicas: 4
+  # credentials
+  credsSecret:
+    name: minio-creds-secret
+  mountPath: /export
+  # storage configuration
+  pools:
+    - name: pool-0
+      serverCount: 4
+      volumeClaimTemplate:
+        metadata:
+          name: data
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 10Gi

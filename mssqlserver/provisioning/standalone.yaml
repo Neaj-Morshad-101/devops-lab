@@ -1,10 +1,10 @@
 apiVersion: kubedb.com/v1alpha2
 kind: MSSQLServer
 metadata:
-  name: standalone-22-cu19
+  name: standalone-cu0
   namespace: demo
 spec:
-  version: "2022-cu19"
+  version: "2025-cu0"
   storageType: Durable
   tls:
     issuerRef:
@@ -12,6 +12,14 @@ spec:
       kind: Issuer
       apiGroup: "cert-manager.io"
     clientTLS: false
+  configuration:
+    secretName: ms-custom-config
+    applyConfig:
+      mssql.conf: |-
+        [memory]
+        memorylimitmb = 2596
+        [network]
+        tcpport = 1433
   podTemplate:
     spec:
       containers:

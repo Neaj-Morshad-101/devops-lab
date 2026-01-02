@@ -1,22 +1,118 @@
+# apiVersion: ops.kubedb.com/v1alpha1
+# kind: MSSQLServerOpsRequest
+# metadata:
+#   name: reconfigure-nothing
+#   namespace: demo
+# spec:
+#   type: Reconfigure
+#   databaseRef:
+#     name: standalone
+#   configuration:
+#     removeCustomConfig: false
+#   timeout: 5m
+#   apply: IfReady
+
+# apiVersion: ops.kubedb.com/v1alpha1
+# kind: MSSQLServerOpsRequest
+# metadata:
+#   name: reconfigure-only-apply
+#   namespace: demo
+# spec:
+#   type: Reconfigure
+#   databaseRef:
+#     name: standalone
+#   configuration:
+#     applyConfig:
+#       mssql.conf: |-
+#         [memory]
+#         memorylimitmb = 3096
+#   timeout: 5m
+#   apply: IfReady
+
+# # ---    
+# apiVersion: ops.kubedb.com/v1alpha1
+# kind: MSSQLServerOpsRequest
+# metadata:
+#   name: reconfigure-only-secret
+#   namespace: demo
+# spec:
+#   type: Reconfigure
+#   databaseRef:
+#     name: standalone
+#   configuration:
+#     # removeCustomConfig: false 
+#     configSecret:
+#       name: ms-custom-config2
+#     # applyConfig:
+#     #   mssql.conf: |-
+#     #     [memory]
+#     #     memorylimitmb = 5096
+#   timeout: 5m
+#   apply: IfReady
+
+
+
+
+# ---    
+# apiVersion: ops.kubedb.com/v1alpha1
+# kind: MSSQLServerOpsRequest
+# metadata:
+#   name: reconfigure-apply-and-secret
+#   namespace: demo
+# spec:
+#   type: Reconfigure
+#   databaseRef:
+#     name: standalone
+#   configuration:
+#     # removeCustomConfig: false 
+#     configSecret:
+#       name: ms-custom-config3
+#     applyConfig:
+#       mssql.conf: |-
+#         [memory]
+#         memorylimitmb = 5096
+#   timeout: 5m
+#   apply: IfReady
+# secret ref, apply,  -> config secret, -> restart
+
+
 apiVersion: ops.kubedb.com/v1alpha1
 kind: MSSQLServerOpsRequest
 metadata:
-  name: reconfigure-all-4
+  name: reconfigure-remove-and-all
   namespace: demo
 spec:
   type: Reconfigure
   databaseRef:
-    name: ms-cluster-apply-and-secret
+    name: standalone
   configuration:
-    removeCustomConfig: true
+    removeCustomConfig: true 
     configSecret:
-      name: new-ms-custom-config
+      name: ms-custom-config3
     applyConfig:
       mssql.conf: |-
         [memory]
-        memorylimitmb = 5096
+        memorylimitmb = 7096
   timeout: 5m
   apply: IfReady
 
-
-# secret ref, apply,  -> config secret, -> restart
+# Configuration:
+# [memory]
+# memorylimitmb = 4096
+# [network]
+# tlscert = /var/opt/mssql/tls/server.crt
+# tlskey = /var/opt/mssql/tls/server.key
+# tlsprotocols = 1.2
+# forceencryption = 1
+# English---------
+# [language]
+# lcid = 1033
+# France ---------- 
+# [language]
+# lcid = 1036
+# [network]
+# tcpport = 1433
+# [sqlagent]
+# enabled = true
+# [sqlconnector]
+# logginglevel = 1
