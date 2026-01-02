@@ -1,11 +1,28 @@
+
+
+
+
+
+
+
+
+
+
+
+
 provisioning test for coordinator change with (ready -> restart-> ready): 
 cu19 (std ok, ag ok), 
 cu22 (std ok, ag ok)
 cu0 (std ok, ag ok)
 
+
+
 provitioning:
 normal (worked)
 with secret + apply: ok
+
+
+
 
 
 reconfigure behavior: testing done all OK 
