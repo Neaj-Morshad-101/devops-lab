@@ -1,0 +1,22 @@
+apiVersion: ops.kubedb.com/v1alpha1
+kind: MSSQLServerOpsRequest
+metadata:
+  name: reconfigure-all-4
+  namespace: demo
+spec:
+  type: Reconfigure
+  databaseRef:
+    name: ms-cluster-apply-and-secret
+  configuration:
+    removeCustomConfig: true
+    configSecret:
+      name: new-ms-custom-config
+    applyConfig:
+      mssql.conf: |-
+        [memory]
+        memorylimitmb = 5096
+  timeout: 5m
+  apply: IfReady
+
+
+# secret ref, apply,  -> config secret, -> restart

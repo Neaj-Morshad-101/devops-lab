@@ -1,16 +1,25 @@
 apiVersion: kubedb.com/v1alpha2
 kind: MSSQLServer
 metadata:
-  name: ms-cluster
+  name: ms-cu-25
   namespace: demo
 spec:
-  version: "2022-cu19"
+  version: "2025-cu0"
   replicas: 3
   # authSecret:
   #   name: mssql-auth
   #   externallyManaged: true
   # configSecret:
   #   name: ms-custom-config
+  configuration:
+    secretName: ms-custom-config
+    applyConfig:
+      mssql.conf: |-
+        [memory]
+        memorylimitmb = 2596
+        [network]
+        tcpport = 1433
+
   topology:
     mode: AvailabilityGroup
     availabilityGroup: 
@@ -59,12 +68,12 @@ spec:
           value: "Y"
         - name: MSSQL_PID
           value: Evaluation
-          # resources:
-          #   requests:
-          #     cpu: "1"
-          #     memory: "1.5Gi"
-          #   limits:
-          #     memory: "2Gi"
+        resources:
+          requests:
+            cpu: "1.5"
+            memory: "2Gi"
+          limits:
+            memory: "4Gi"
       # - name: mssql-coordinator
       #   env:
       #   - name: GODEBUG
@@ -87,7 +96,7 @@ spec:
     - ReadWriteOnce
     resources:
       requests:
-        storage: 1Gi
+        storage: 10Gi
   deletionPolicy: WipeOut
 
   
