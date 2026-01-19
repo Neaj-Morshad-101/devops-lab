@@ -33,7 +33,7 @@ spec:
           limits:
             memory: 4Gi
           requests:
-            cpu: 1.5
+            cpu: "1.5"
             memory: 2Gi
   # init:
   #   script:

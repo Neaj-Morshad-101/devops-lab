@@ -1,31 +1,31 @@
-apiVersion: kubedb.com/v1
-kind: ProxySQL
-metadata:
-  name: mysql-proxy9
-  namespace: demo
-spec:
-  version: 3.0.1-debian # "2.7.3-debian" # "2.6.3-debian"
-  replicas: 1
-  syncUsers: true
-  backend:  
-    name: mysql9
-  # tls:
-  #   issuerRef:
-  #     apiGroup: cert-manager.io
-  #     kind: Issuer
-  #     name: proxysql-ca-issuer
-  #   certificates:
-  #   - alias: server
-  #     subject:
-  #       organizations:
-  #       - kubedb:server
-  #     dnsNames:
-  #     - localhost
-  #     ipAddresses:
-  #     - "127.0.0.1"
-  deletionPolicy: WipeOut
+# apiVersion: kubedb.com/v1
+# kind: ProxySQL
+# metadata:
+#   name: mysql-proxy0
+#   namespace: demo
+# spec:
+#   version: 3.0.1-debian # "2.7.3-debian" # "2.6.3-debian"
+#   replicas: 1
+#   syncUsers: true
+#   backend:  
+#     name: mysql9
+#   # tls:
+#   #   issuerRef:
+#   #     apiGroup: cert-manager.io
+#   #     kind: Issuer
+#   #     name: proxysql-ca-issuer
+#   #   certificates:
+#   #   - alias: server
+#   #     subject:
+#   #       organizations:
+#   #       - kubedb:server
+#   #     dnsNames:
+#   #     - localhost
+#   #     ipAddresses:
+#   #     - "127.0.0.1"
+#   deletionPolicy: WipeOut
 
----
+# ---
 
 apiVersion: kubedb.com/v1
 kind: ProxySQL
@@ -34,7 +34,7 @@ metadata:
   namespace: demo
 spec:
   version: "2.7.3-debian" # "2.6.3-debian"
-  replicas: 1
+  replicas: 3
   syncUsers: true
   backend:
     name: mysql843

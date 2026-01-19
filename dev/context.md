@@ -1,3 +1,131 @@
+*: Improve and generalize Configure / Reconfigure process for all DBs
+#1331
+Open
+Feature
+kubedb
+/
+internal
+Private
+Open
+*: Improve and generalize Configure / Reconfigure process for all DBs
+#1331
+Feature
+kubedb
+/
+internal
+@Neaj-Morshad-101
+Description
+Neaj-Morshad-101
+opened on Dec 19, 2025 · edited by Neaj-Morshad-101
+Since different DBs have different implementations of the Configure / Reconfigure process, we need to generalize this.
+
+The user-provided secret should not be modified, so the secret can be shared across DB objects in the same namespace. Currently, users' secrets are being modified for almost all DB (ops-manager) for processing applyConfig.
+
+We need to update the .Spec.configSecret field so that the source of full custom config (config secret and applyConfig) is visible in the DB CRD, the applyConfig can be used while provisioning, and GitOps gets simpler. Example,
+
+Previous Spec:
+
+// ConfigSecret is an optional field to provide a custom configuration file for the database (i.e, postgresql.conf).
+// If specified, this file will be used as the configuration file; otherwise default configuration file will be used
+ConfigSecret *core.LocalObjectReference `json:"configSecret,omitempty"`
+New Spec:
+
+Configuration *PostgresConfiguration `json:"configuration,omitempty"`
+
+type PostgresConfiguration struct {
+  // SecretName is an optional field to provide a custom configuration file for the database (i.e, postgresql.conf).
+  // If specified, this file will be used as the configuration file; otherwise default configuration file will be used.
+  SecretName  string            `json:"secretName,omitempty"`
+  ApplyConfig map[string]string `json:"applyConfig,omitempty"`
+  // +optional
+  Tuning *PostgresTuningConfig `json:"tuning,omitempty"`
+}
+We should create a secret named ${db-cr-name}-uid[6] (the last 6 digits of the DB CR's UID), which will be used for mounting the config files in the pod. Avoid copying the data from the user's secret to this secret to keep the secrets small. For that, we can use projected volume like
+  volumes:
+  - name: all-in-one
+    projected:
+      sources:
+      - secret:
+          name: <user-given-config-secret-name>
+          items:
+            - key: user.conf
+              path: user.conf
+
+      - secret:
+          name: <db-cr-name>-uid[6]
+          items:
+            - key: autune.config
+              path: autune.config
+            - key: apply.conf
+              path: apply.conf
+db-cr-name-uid[6] config secret example:
+
+data:
+   autune.config: |
+     ....
+   apply.conf: |
+    a=b
+    c=d
+Prefer to mount the files separately, then merge the configs if needed.
+For config merging, prefer-to-use: file include > append configs > merge configs (raw content).
+
+We need to generalize the ops-request's behaviour for all dbs. As we are merging all pending reconfigure ops requests into one, which can have both applyConfig and configSecret set. So we need to process that merged ReconfigureOpsRequest.
+This is the finalized behaviour (Giving all combinations of remove, apply, and configSecret is allowed):
+if RemoveCustomConfig is true:
+
+No applyConfig and ConfigSecret are given: Remove the previous custom configurations (applyConfig and configSecret)
+Only applyConfig is given: Remove previously used custom configurations, and use the configuration given in the applyConfig.
+configSecret is given: Remove previously used custom configurations, and use the configuration given in the configSecret.
+If RemoveCustomConfig is false:
+
+Only applyConfig is given: keep the previous custom config if it exists. Merge the applyConfig with the previous applyConfig if it exists. Otherwise, just use the given applyConfig, keep these configs in the DB CR, also in -uid[6] secret (for mounting to pods).
+Only configSecret is given: Use the newly given configSecret as the custom config secret. Keep the previous applyConfigs as well.
+config + apply: Allowed. Use both. For merging, give priority to applyconfig.
+And,
+
+We need to ensure that the applyConfig gets merged with the previous config if RemoveCustomConfig is false (if it is currently not getting merged with previous configs / if it removes previous configs).
+We need to modify the validation to support giving all combinations of remove, apply, and configSecret.
+We need to skip the restart if the reconfiguration can be done without a restart. For that, we need to check if the given configurations can be applied without a restart (like using commands, reloads, etc).
+In the OpsRequest: Add a field named restart: auto/true/false. Auto is the default; if auto is set, check if a restart is actually needed; otherwise, use commands, reloads for the reconfiguration.
+
+
+
+
+
+API updates:
+Spec.ConfigSecret to Spec.Configuration.SecretName
+Configuration.Inline 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 GitOps Overview for PostgreSQL
 This guide will give you an overview of how KubeDB gitops operator works with PostgreSQL databases using the gitops.kubedb.com/v1alpha1 API. It will help you understand the GitOps workflow for managing PostgreSQL databases in Kubernetes.
 

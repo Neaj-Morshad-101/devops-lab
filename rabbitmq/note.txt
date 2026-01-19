@@ -1,0 +1,17 @@
+defaut:
+rabbimq.conf 
+plugin.conf
+apply.conf (if apply given)
+
+custom config:
+rabbimq.conf (this is custom config mounted in diff dir)
+rabbimq.conf 
+plugin.conf
+after merge: rabbimq.conf and plugin.conf gets updated with custom configs
+
+
+now: 
+custom-apply.conf 
+custom-secret.conf
+rabbimq.conf 
+plugin.conf

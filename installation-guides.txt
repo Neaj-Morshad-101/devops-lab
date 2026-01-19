@@ -1,10 +1,12 @@
 ###### KubeDB Installation Commands ############
 
+kubectl get ns kube-system -o=jsonpath='{.metadata.uid}'
+
+
 export KUBECONFIG=/home/neaj/Downloads/neaj-kubeconfig.yaml
 export REGISTRY=neajmorshad
 export LICENSE_FILE=$HOME/Downloads/kind-license.txt
 
-kubectl get ns kube-system -o=jsonpath='{.metadata.uid}'
 
 kubectl create ns demo kubedb
 kubectl label ns demo pod-security.kubernetes.io/enforce=restricted
@@ -24,7 +26,6 @@ cd ../webhook-server
 make deploy-to-kind
 cd ../../kubeops.dev/petset
 make deploy-to-kind
-cd ../../kubedb.dev/mssqlserver
 
 Install KubeDB:
 helm install kubedb oci://ghcr.io/appscode-charts/kubedb \
@@ -143,6 +144,9 @@ helm upgrade -i coreos-prom-memcd charts/memcached-alerts -n demo
 
 It will provide the JSON for debuging:
 helm install  --dry-run --debug memcached charts/memcached-alerts -n demo --create-namespace --version=v2023.05.09
+
+
+
 
 
 

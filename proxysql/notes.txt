@@ -1,0 +1,64 @@
+ProxySQL has 3 layers of config storage:
+
+pgsql
+￼Copy code
+Admin Tables (SQLite, in-memory)
+        ↓ LOAD
+Runtime (active config in memory)
+        ↓ SAVE
+On-disk SQLite DB (proxysql.db)
+
+
+🔄 What happens on restart?
+
+When ProxySQL starts:
+
+1️⃣ Reads proxysql.cnf (only bootstrap config)
+2️⃣ Opens /var/lib/proxysql/proxysql.db
+3️⃣ Loads saved tables into runtime automatically
+
+
+proxysql.db ALWAYS has higher priority than proxysql.cnf. 
+If proxysql.db exists, proxysql.cnf is ignored (except bootstrap-only fields).
+
+
+
+
+When ProxySQL starts:
+
+1️⃣ Check for existing SQLite DB
+/var/lib/proxysql/proxysql.db
+
+
+✅ If DB exists → ProxySQL loads everything from DB
+
+❌ If DB does NOT exist → ProxySQL uses proxysql.cnf to create DB
+
+2️⃣ Role of proxysql.cnf
+
+proxysql.cnf is NOT a live config file like MySQL/Postgres.
+
+It is used only once:
+
+Situation Used?
+First startup ✅ YES
+DB deleted  ✅ YES
+Normal restart  ❌ NO
+
+After DB exists:
+proxysql.cnf is ignored
+Changes in .cnf have no effect
+
+🔍 What is still read from proxysql.cnf?
+Even when DB exists, a few bootstrap / process-level settings are read:
+
+Examples:
+datadir
+admin_credentials
+mysql_ifaces
+admin_ifaces
+
+These are not stored in DB.
+
+
+
