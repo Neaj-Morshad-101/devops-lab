@@ -3,12 +3,15 @@
 kubectl get ns kube-system -o=jsonpath='{.metadata.uid}'
 
 
-export KUBECONFIG=/home/neaj/Downloads/neaj-kubeconfig.yaml
+export KUBECONFIG=/home/neaj/Downloads/neaj-hanadb-kubeconfig.yaml
+export LICENSE_FILE=$HOME/Downloads/neaj-hanadb-license.txt
+
 export REGISTRY=neajmorshad
 export LICENSE_FILE=$HOME/Downloads/kind-license.txt
 
 
-kubectl create ns demo kubedb
+kubectl create ns demo
+kubectl create ns kubedb
 kubectl label ns demo pod-security.kubernetes.io/enforce=restricted
 kubectl label ns kubedb pod-security.kubernetes.io/enforce=restricted
 
@@ -29,16 +32,39 @@ make deploy-to-kind
 
 Install KubeDB:
 helm install kubedb oci://ghcr.io/appscode-charts/kubedb \
-          --version v2025.6.30 \
+          --version v2026.1.19 \
           --namespace kubedb --create-namespace \
-          --set-file global.license=$HOME/Downloads/neaj-dag-license.txt \
-          --set global.featureGates.MSSQLServer=true \
-          --set global.featureGates.MySQL=true \
-          --set global.featureGates.MariaDB=true \
-          --set global.featureGates.PerconaXtraDB=true \
-          --set global.featureGates.ProxySQL=true \
-          --set global.featureGates.Redis=true \
-          --set global.featureGates.Memcached=true \
+          --set-file global.license=$HOME/Downloads/neaj-hanadb-license.txt \
+          --set global.featureGates.Cassandra=true         \
+          --set global.featureGates.ClickHouse=true        \
+          --set global.featureGates.DB2=true               \
+          --set global.featureGates.Druid=true             \
+          --set global.featureGates.Elasticsearch=true     \
+          --set global.featureGates.FerretDB=true          \
+          --set global.featureGates.HanaDB=true            \
+          --set global.featureGates.Hazelcast=true         \
+          --set global.featureGates.Ignite=true            \
+          --set global.featureGates.Kafka=true             \
+          --set global.featureGates.MariaDB=true           \
+          --set global.featureGates.Memcached=true         \
+          --set global.featureGates.Milvus=true            \
+          --set global.featureGates.MongoDB=true           \
+          --set global.featureGates.MSSQLServer=true       \
+          --set global.featureGates.MySQL=true             \
+          --set global.featureGates.Neo4j=true             \
+          --set global.featureGates.Oracle=true            \
+          --set global.featureGates.PerconaXtraDB=true     \
+          --set global.featureGates.PgBouncer=true         \
+          --set global.featureGates.Pgpool=true            \
+          --set global.featureGates.Postgres=true          \
+          --set global.featureGates.ProxySQL=true          \
+          --set global.featureGates.Qdrant=true            \
+          --set global.featureGates.RabbitMQ=true          \
+          --set global.featureGates.Redis=true             \
+          --set global.featureGates.Singlestore=true       \
+          --set global.featureGates.Solr=true              \
+          --set global.featureGates.Weaviate=true          \
+          --set global.featureGates.ZooKeeper=true         \
           --wait --timeout 15m0s --burst-limit=10000 --debug -f https://raw.githubusercontent.com/kubedb/installer/master/charts/kubedb/ci/ci-values.yaml
 
 
@@ -82,8 +108,8 @@ kubectl get crd -o name | grep kubedb.com | xargs kubectl delete
 Install Petset:
 helm repo add appscode https://charts.appscode.com/stable/
 helm repo update
-helm search repo appscode/petset --version=v2025.8.31
-helm install petset appscode/petset -n kubeops --create-namespace --version=v2025.8.31
+helm search repo appscode/petset --version=v2026.1.15
+helm install petset appscode/petset -n kubeops --create-namespace --version=v2026.1.15
 
 
 
@@ -110,32 +136,46 @@ helm repo update
 helm install prometheus prometheus-community/kube-prometheus-stack -n monitoring --set grafana.image.tag=7.5.5 --create-namespace
 
 helm install prometheus prometheus-community/kube-prometheus-stack -n monitoring --create-namespace --wait --burst-limit=10000
+
 helm uninstall prometheus -n monitoring
 
 kubectl port-forward -n monitoring service/prometheus-grafana 3000:80
 
-helm repo add appscode https://charts.appscode.com/stable/ 
-helm repo update
 
 # panopticon
+helm repo add appscode https://charts.appscode.com/stable/ 
+helm repo update
+helm search repo appscode/panopticon --version=v2026.1.15
 helm upgrade -i panopticon oci://ghcr.io/appscode-charts/panopticon \
-  --version v2024.9.30 \
+  --version=v2026.1.15 \
   -n monitoring --create-namespace \
-  --set-file license=$HOME/Downloads/kind-license.txt
+  --set-file license=$HOME/Downloads/neaj-hanadb-license.txt
 
+
+helm search repo appscode/kubedb-metrics --version=v2026.1.19
 helm upgrade -i kubedb-metrics oci://ghcr.io/appscode-charts/kubedb-metrics \
-  --version v2024.9.30 \
+  --version=v2026.1.19 \
   -n kubedb --create-namespace
+
 
 Not needed usually:
 helm upgrade -i monitoring-operator oci://ghcr.io/appscode-charts/monitoring-operator \
   --version v2024.11.18 \
   -n monitoring --create-namespace
 
+
+
+
+
+
+
 #### Kubernetes Metrics Server
 kubectl apply -f components.yaml
 
 kubectl view-secret -n monitoring prometheus-grafana -a
+
+
+
 
 helm upgrade -i coreos-prom-memcd charts/memcached-alerts -n demo 
     --create-namespace 
@@ -186,7 +226,7 @@ https://longhorn.io/docs/1.7.2/deploy/install/install-with-helm/
 
 helm repo add longhorn https://charts.longhorn.io
 helm repo update
-helm install longhorn longhorn/longhorn --namespace longhorn-system --create-namespace --version 1.8.1
+helm install longhorn longhorn/longhorn --namespace longhorn-system --create-namespace --version 1.10.1
 
 
 cannot uninstall Longhorn because deleting-confirmation-flag is set to `false`. Please set it to `true` using Longhorn UI or 
@@ -194,20 +234,20 @@ kubectl -n longhorn-system edit settings.longhorn.io deleting-confirmation-flag
 helm uninstall longhorn -n longhorn-system
 
 
-Common Utitilities:
+### Common Utitilities:
 kubectl krew install view-secret
 
 
 Miscellaneous:
 
-#####Delete stucked namespace: 
+### Delete stucked namespace: 
 kubectl get namespace "kubestash" -o json \
         | tr -d "\n" | sed "s/\"finalizers\": \[[^]]\+\]/\"finalizers\": []/" \
         | kubectl replace --raw /api/v1/namespaces/kubestash/finalize -f -
 
 
 
-increase file watcher 
+# increase file watcher 
 sudo sysctl -w fs.inotify.max_user_watches=2099999999
 sudo sysctl -w fs.inotify.max_user_instances=2099999999
 sudo sysctl -w fs.inotify.max_queued_events=2099999999

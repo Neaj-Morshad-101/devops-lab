@@ -19,9 +19,9 @@ Neaj-Morshad-101
 opened on Dec 19, 2025 · edited by Neaj-Morshad-101
 Since different DBs have different implementations of the Configure / Reconfigure process, we need to generalize this.
 
-The user-provided secret should not be modified, so the secret can be shared across DB objects in the same namespace. Currently, users' secrets are being modified for almost all DB (ops-manager) for processing applyConfig.
+The user-provided secret should not be modified, so the secret can be shared across DB objects in the same namespace. Currently, users' secrets are being modified for almost all DB (ops-manager) for processing Inline.
 
-We need to update the .Spec.configSecret field so that the source of full custom config (config secret and applyConfig) is visible in the DB CRD, the applyConfig can be used while provisioning, and GitOps gets simpler. Example,
+We need to update the .Spec.configSecret field so that the source of full custom config (config secret and Inline) is visible in the DB CRD, the Inline can be used while provisioning, and GitOps gets simpler. Example,
 
 Previous Spec:
 
@@ -36,7 +36,7 @@ type PostgresConfiguration struct {
   // SecretName is an optional field to provide a custom configuration file for the database (i.e, postgresql.conf).
   // If specified, this file will be used as the configuration file; otherwise default configuration file will be used.
   SecretName  string            `json:"secretName,omitempty"`
-  ApplyConfig map[string]string `json:"applyConfig,omitempty"`
+  Inline map[string]string `json:"Inline,omitempty"`
   // +optional
   Tuning *PostgresTuningConfig `json:"tuning,omitempty"`
 }
@@ -69,21 +69,21 @@ data:
 Prefer to mount the files separately, then merge the configs if needed.
 For config merging, prefer-to-use: file include > append configs > merge configs (raw content).
 
-We need to generalize the ops-request's behaviour for all dbs. As we are merging all pending reconfigure ops requests into one, which can have both applyConfig and configSecret set. So we need to process that merged ReconfigureOpsRequest.
+We need to generalize the ops-request's behaviour for all dbs. As we are merging all pending reconfigure ops requests into one, which can have both Inline and configSecret set. So we need to process that merged ReconfigureOpsRequest.
 This is the finalized behaviour (Giving all combinations of remove, apply, and configSecret is allowed):
 if RemoveCustomConfig is true:
 
-No applyConfig and ConfigSecret are given: Remove the previous custom configurations (applyConfig and configSecret)
-Only applyConfig is given: Remove previously used custom configurations, and use the configuration given in the applyConfig.
+No Inline and ConfigSecret are given: Remove the previous custom configurations (Inline and configSecret)
+Only Inline is given: Remove previously used custom configurations, and use the configuration given in the Inline.
 configSecret is given: Remove previously used custom configurations, and use the configuration given in the configSecret.
 If RemoveCustomConfig is false:
 
-Only applyConfig is given: keep the previous custom config if it exists. Merge the applyConfig with the previous applyConfig if it exists. Otherwise, just use the given applyConfig, keep these configs in the DB CR, also in -uid[6] secret (for mounting to pods).
-Only configSecret is given: Use the newly given configSecret as the custom config secret. Keep the previous applyConfigs as well.
-config + apply: Allowed. Use both. For merging, give priority to applyconfig.
+Only Inline is given: keep the previous custom config if it exists. Merge the Inline with the previous Inline if it exists. Otherwise, just use the given Inline, keep these configs in the DB CR, also in -uid[6] secret (for mounting to pods).
+Only configSecret is given: Use the newly given configSecret as the custom config secret. Keep the previous Inlines as well.
+config + apply: Allowed. Use both. For merging, give priority to Inline.
 And,
 
-We need to ensure that the applyConfig gets merged with the previous config if RemoveCustomConfig is false (if it is currently not getting merged with previous configs / if it removes previous configs).
+We need to ensure that the Inline gets merged with the previous config if RemoveCustomConfig is false (if it is currently not getting merged with previous configs / if it removes previous configs).
 We need to modify the validation to support giving all combinations of remove, apply, and configSecret.
 We need to skip the restart if the reconfiguration can be done without a restart. For that, we need to check if the given configurations can be applied without a restart (like using commands, reloads, etc).
 In the OpsRequest: Add a field named restart: auto/true/false. Auto is the default; if auto is set, check if a restart is actually needed; otherwise, use commands, reloads for the reconfiguration.
@@ -94,7 +94,11 @@ In the OpsRequest: Add a field named restart: auto/true/false. Auto is the defau
 
 API updates:
 Spec.ConfigSecret to Spec.Configuration.SecretName
-Configuration.Inline 
+Configuration.Inline (user can provide Inline while provisioning, Inline get's updated with reconfigure changes)
+
+
+
+
 
 
 

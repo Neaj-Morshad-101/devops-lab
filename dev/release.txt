@@ -1,7 +1,8 @@
 Responsible for DBs:
 development (primary):
-mssql
-proxysql 
+mssql # redis 
+proxysql
+
 
 memcached
 ignite 
@@ -18,6 +19,8 @@ hanadb
 qdrant
 milvus
 
+kafka
+pgbouncer/pgpool 
 
 
 
@@ -27,38 +30,89 @@ milvus
 
 
 
-Cassandra:
-ClickHouse:
-DB2:
-Druid:
-Elasticsearch:
+Sorted: 30
+Cassandra
+ClickHouse
+DB2
+Druid
+Elasticsearch
 
-FerretDB:
-HanaDB:
-Hazelcast: 
-Ignite: 
-Kafka: 
+FerretDB
+HanaDB
+Hazelcast
+Ignite
+Kafka
 
-MariaDB: 
-Memcached: 
-Milvus: 
-MongoDB: 
-MSSQLServer: 
+MariaDB
+Memcached
+Milvus
+MongoDB
+MSSQLServer
 
-MySQL: 
-Neo4j: 
-Oracle: 
-PerconaXtraDB: 
-PgBouncer: 
+MySQL
+Neo4j
+Oracle
+PerconaXtraDB
+PgBouncer
 
-Pgpool: 
-Postgres: 
-ProxySQL: 
-Qdrant: 
-RabbitMQ: 
+Pgpool
+Postgres
+ProxySQL
+Qdrant
+RabbitMQ
 
-Redis: 
-Singlestore: 
-Solr: 
-Weaviate: 
-ZooKeeper: 
+Redis
+Singlestore
+Solr
+Weaviate
+ZooKeeper
+
+
+
+
+
+
+
+
+
+SQL Databases:
+DB2
+HanaDB
+MariaDB
+MSSQLServer
+MySQL
+Oracle
+PerconaXtraDB
+Postgres
+Singlestore
+
+NoSQL Databases:
+Cassandra
+ClickHouse (column-oriented, often OLAP but non-relational)
+Druid
+Elasticsearch
+FerretDB
+MongoDB
+Neo4j (graph DB)
+Solr
+
+Vector Databases:
+Milvus
+Qdrant
+Weaviate
+
+Cache / In-Memory Data Stores:
+Hazelcast
+Ignite
+Memcached
+Redis
+
+Messaging / Streaming / Coordination:
+Kafka
+RabbitMQ
+ZooKeeper
+
+Connection Pooling / Proxy / Middleware:(Not databases, but important in DB ecosystems)
+PgBouncer
+Pgpool
+ProxySQL

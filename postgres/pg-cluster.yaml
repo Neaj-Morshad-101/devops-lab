@@ -22,3 +22,13 @@ spec:
   #       labels:
   #         release: prometheus
   #       interval: 10s
+  podTemplate:
+    spec:
+      containers:
+      - name: postgres
+        resources:
+          requests:
+            cpu: "1.5"
+            memory: "2Gi"
+          limits:
+            memory: "4Gi"

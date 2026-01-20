@@ -14,7 +14,7 @@ spec:
     clientTLS: false
   configuration:
     secretName: ms-custom-config
-    applyConfig:
+    inline:
       mssql.conf: |-
         [memory]
         memorylimitmb = 2596
