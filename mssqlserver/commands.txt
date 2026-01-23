@@ -48,6 +48,7 @@ General SQL Server Commands:
 cat /var/opt/mssql/mssql.conf
 mssql running?
 ps aux | grep -v grep | grep -c sqlservr
+ps aux | grep -v grep | grep -c '/opt/mssql/bin/sqlservr' || echo 0
 
 connect: 
 /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P $MSSQL_SA_PASSWORD -No

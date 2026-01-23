@@ -1,0 +1,33 @@
+apiVersion: ops.kubedb.com/v1alpha1
+kind: MSSQLServerOpsRequest
+metadata:
+  name: configure-1-only-apply
+  namespace: demo
+spec:
+  type: Reconfigure
+  databaseRef:
+    name: standalone
+  configuration:
+    applyConfig:
+      mssql.conf: |-
+        [sqlconnector]
+        logginglevel = 0
+  timeout: 5m
+  apply: IfReady
+  
+---
+
+apiVersion: ops.kubedb.com/v1alpha1
+kind: MSSQLServerOpsRequest
+metadata:
+  name: configure-2-only-config
+  namespace: demo
+spec:
+  type: Reconfigure
+  databaseRef:
+    name: standalone
+  configuration:
+    configSecret:
+      name: ms-new-custom-config
+  timeout: 5m
+  apply: IfReady

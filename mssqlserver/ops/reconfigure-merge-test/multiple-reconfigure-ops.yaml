@@ -1,3 +1,39 @@
+# provisioning:
+
+  # configuration:
+  #   secretName: ms-custom-config
+  #   inline:
+  #     mssql.conf: |-
+  #       [memory]
+  #       memorylimitmb = 2511
+  #       [network]
+  #       tcpport = 1433
+
+#   ➤ kubectl view-secret -n demo ms-custom-config -a
+# mssql.conf='[network]
+# tlsprotocols = 1.2
+
+# [language]
+# lcid = 1033
+
+# [memory]
+# memorylimitmb = 2304
+# '
+
+
+# ➤ kubectl view-secret -n demo standalone-9188a3 -a
+# mssql.conf='[language]
+# lcid = 1033
+# [memory]
+# memorylimitmb = 2511
+# [network]
+# tcpport = 1433
+# tlsprotocols = 1.2
+# '
+
+
+
+
 apiVersion: ops.kubedb.com/v1alpha1
 kind: MSSQLServerOpsRequest
 metadata:
@@ -17,6 +53,17 @@ spec:
 ---
 
 
+# ➤ kubectl view-secret -n demo standalone-9188a3 -a
+# mssql.conf='[language]
+# lcid = 1033
+# [memory]
+# memorylimitmb = 2511
+# [network]
+# tcpport = 1433
+# tlsprotocols = 1.2
+# [sqlconnector]
+# logginglevel = 0
+
 
 
 apiVersion: ops.kubedb.com/v1alpha1
@@ -29,8 +76,8 @@ spec:
   databaseRef:
     name: standalone
   configuration:
-      configSecret:
-        name: ms-new-custom-config
+    configSecret:
+      name: ms-new-custom-config
   timeout: 5m
   apply: IfReady
 
@@ -38,11 +85,25 @@ spec:
 # mssql.conf='[sqlagent]
 # enabled = true'
 
+
+// verify 
+# ➤ kubectl view-secret -n demo standalone-9188a3 -a
+# mssql.conf='[language]
+# lcid = 1033
+# [memory]
+# memorylimitmb = 2511
+# [network]
+# tcpport = 1433
+# tlsprotocols = 1.2
+# [sqlconnector]
+# logginglevel = 0
+
+
 ---
 apiVersion: ops.kubedb.com/v1alpha1
 kind: MSSQLServerOpsRequest
 metadata:
-  name: configure-3-remove-apply
+  name: configure-3-remove-and-apply
   namespace: demo
 spec:
   type: Reconfigure
@@ -99,7 +160,8 @@ spec:
 # apply:
 #   [network]
 #   tcpport = 1433
-
+#   [memory]
+#   memorylimitmb = 2096
 
 ---
 
@@ -119,7 +181,7 @@ spec:
         [sqlconnector]
         logginglevel = 1
         [memory]
-        memorylimitmb = 2096
+        memorylimitmb = 2097
   timeout: 5m
   apply: IfReady
 
@@ -135,12 +197,12 @@ spec:
 #   [sqlconnector]
 #   logginglevel = 1
 #   [memory]
-#   memorylimitmb = 2096
+#   memorylimitmb = 2097
 
 
 # final config:
 # [memory]
-# memorylimitmb = 2096
+# memorylimitmb = 2097
 # [sqlagent]
 # enabled = false
 # [network]

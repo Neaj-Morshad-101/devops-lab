@@ -1,10 +1,10 @@
 apiVersion: kubedb.com/v1alpha2
 kind: MSSQLServer
 metadata:
-  name: ag-cu-0
+  name: ag
   namespace: demo
 spec:
-  version: "2025-cu0"
+  version: "2022-cu12"
   replicas: 3
   # authSecret:
   #   name: mssql-auth
@@ -13,13 +13,12 @@ spec:
   #   name: ms-custom-config
   configuration:
     secretName: ms-custom-config
-    applyConfig:
+    inline:
       mssql.conf: |-
         [memory]
         memorylimitmb = 2596
         [network]
         tcpport = 1433
-
   topology:
     mode: AvailabilityGroup
     availabilityGroup: 

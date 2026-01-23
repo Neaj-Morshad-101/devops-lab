@@ -1,4 +1,15 @@
+script issue: std test done, ag done 
 
+reconfigure test: start with version cu0 
+reconfig-1, 
+reconfig-2,
+
+
+
+*std ready, apply two ops, verify mering, config 
+std delete/create, apply tree ops, verify merging, config
+std delete/create, apply four ops, verify merging, config
+std delete/create, apply five ops, verify merging, config
 
 
 

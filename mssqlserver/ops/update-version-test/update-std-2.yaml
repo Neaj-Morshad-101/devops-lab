@@ -1,0 +1,13 @@
+apiVersion: ops.kubedb.com/v1alpha1
+kind: MSSQLServerOpsRequest
+metadata:
+  name: update-std-cu12-cu0
+  namespace: demo
+spec:
+  type: UpdateVersion
+  databaseRef:
+    name: standalone
+  updateVersion:
+    targetVersion: 2025-cu0
+  timeout: 5m
+  apply: IfReady
