@@ -1,0 +1,29 @@
+apiVersion: kubedb.com/v1
+kind: Postgres
+metadata:
+  name: ha-postgres
+  namespace: demo
+spec:
+  replicas: 3
+  storageType: Durable
+  podTemplate:
+    spec:
+      restartPolicy: Always
+      containers:
+      - name: postgres
+        resources:
+          requests:
+            cpu: "300m"
+            memory: "356Mi"
+      - name: pg-coordinator
+        resources:
+          requests:
+            cpu: "150m"
+            memory: "100Mi"
+  storage:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 7Gi
+  version: "17.4"
