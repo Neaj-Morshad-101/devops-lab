@@ -1,0 +1,30 @@
+Kafka: concepts, clustering setup / modes, cluster management / automatic failover, HA and write consistency
+
+concepts: topic, producer, consumer, broker, etc. 
+
+components:
+broker, controller?  Connectors?
+
+data received, stored, delevered by brokers
+
+
+data: organized by topics
+
+topic: can be partitioned, each partition can have replicas
+
+consumer group is a group of consumers. each event of a topic will be consumed by one consumer from a consumer group.
+
+steam api? 
+
+
+
+cluster setup / modes?
+
+
+
+cluster management / automatic failover?
+Zookeeper or Raft? 
+
+
+HA and write consistency (when a write is considered “successful”) like “How many replicas must confirm the write before we say OK?”
+

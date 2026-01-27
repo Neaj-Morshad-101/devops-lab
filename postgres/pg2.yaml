@@ -1,0 +1,24 @@
+apiVersion: kubedb.com/v1
+kind: Postgres
+metadata:
+  name: pg2
+  namespace: demo
+spec:
+  version: "17.4"
+  replicas: 3
+  # clientAuthMode: "cert"
+  # sslMode: "verify-full"
+  standbyMode: Hot
+  storageType: Durable
+  # tls:
+  #   issuerRef:
+  #     apiGroup: cert-manager.io
+  #     kind: Issuer
+  #     name: pg-issuer
+  storage:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 1Gi
+  deletionPolicy: WipeOut

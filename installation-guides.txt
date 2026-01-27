@@ -98,6 +98,44 @@ helm upgrade kubedb oci://ghcr.io/appscode-charts/kubedb \
           --set global.featureGates.Memcached=true \
           --wait --burst-limit=10000 --debug -f https://raw.githubusercontent.com/kubedb/installer/master/charts/kubedb/ci/ci-values.yaml
 
+Add operator-shard-manager:
+helm upgrade -i kubedb oci://ghcr.io/appscode-charts/kubedb \
+        --version v2026.1.19 \
+        --namespace kubedb --create-namespace \
+        --set operator-shard-manager.enabled=true \
+        --set kubedb-provisioner.replicaCount=3 \
+        --set-file global.license=$HOME/Downloads/neaj-hanadb-license.txt \
+        --wait --burst-limit=10000 --debug
+
+kubectl patch sts kubedb-kubedb-provisioner -n kubedb --type='merge' -p '{
+  "spec": {
+    "template": {
+      "spec": {
+        "affinity": {
+          "podAntiAffinity": {
+            "preferredDuringSchedulingIgnoredDuringExecution": [
+              {
+                "weight": 100,
+                "podAffinityTerm": {
+                  "labelSelector": {
+                    "matchLabels": {
+                      "app.kubernetes.io/instance": "kubedb",
+                      "app.kubernetes.io/name": "kubedb-provisioner"
+                    }
+                  },
+                  "topologyKey": "kubernetes.io/hostname"
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}'
+
+
+
 Uninstall KubeDB:
 helm uninstall kubedb --namespace kubedb
 kubectl get crd -o name | grep kubedb.com | xargs kubectl delete
