@@ -1,11 +1,13 @@
 Kafka: concepts, clustering setup / modes, cluster management / automatic failover, HA and write consistency
 
-concepts: topic, producer, consumer, broker, etc. 
+concepts: topic (like table), producer, consumer, broker, controller (kRaft), etc. 
 
 components:
-broker, controller?  Connectors?
-
-data received, stored, delevered by brokers
+broker: data received, stored, delevered by brokers
+controller? topic's partition's replicas leader management, consumer management (leader, assign)  
+Connectors? used to data sent to or received from external servers. 
+rest proxy 
+schema registry 
 
 
 data: organized by topics
@@ -14,17 +16,17 @@ topic: can be partitioned, each partition can have replicas
 
 consumer group is a group of consumers. each event of a topic will be consumed by one consumer from a consumer group.
 
-steam api? 
+steam api? for streaming 
 
 
 
 cluster setup / modes?
+combined: broker + controller, topology: separate broker, controller
 
 
 
 cluster management / automatic failover?
-Zookeeper or Raft? 
+Zookeeper previsouly -> Now KRaft (Controller component)
 
 
 HA and write consistency (when a write is considered “successful”) like “How many replicas must confirm the write before we say OK?”
-

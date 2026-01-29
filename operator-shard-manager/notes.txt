@@ -1,0 +1,147 @@
+The Core Mechanism:
+Pod Discovery & Indexing: 
+The controller discovers operator pods (from Deployments/StatefulSets/DaemonSets) and assigns each an index (0, 1, 2, ...). It maintains stable indices during scaling by preserving pod positions.
+
+Consistent Hashing: Instead of simple modulo hashing, it uses a consistent hash ring (with xxhash algorithm) that ensures when you scale from N to N+1 shards, only ~1/(N+1) of resources move, not all of them.
+
+Resource Labeling: Every target resource gets labeled with its shard index:
+shard.operator.k8s.appscode.com/kubedb: "2"
+The hash is computed from namespace/name or a custom JSONPath field
+
+Operator Integration: Operators filter resources by shard label - either using label selectors (memory efficient) or predicates (allows accessing cross-shard references).
+
+Dynamic Watching: The controller automatically discovers and watches ANY resource type specified in the ShardConfiguration, making it work with any API group.
+
+
+
+```
+➤ kubectl get shardconfiguration kubedb-provisioner -oyaml
+apiVersion: operator.k8s.appscode.com/v1alpha1
+kind: ShardConfiguration
+metadata:
+  annotations:
+    meta.helm.sh/release-name: kubedb
+    meta.helm.sh/release-namespace: kubedb
+  creationTimestamp: "2026-01-26T14:12:55Z"
+  finalizers:
+  - operator.k8s.appscode.com
+  generation: 1
+  labels:
+    app.kubernetes.io/managed-by: Helm
+  name: kubedb-provisioner
+  resourceVersion: "737330"
+  uid: a677f8f7-a3b4-4d18-b413-1e6c10b7cb9d
+spec:
+  controllers:
+  - apiGroup: apps
+    kind: StatefulSet
+    name: kubedb-kubedb-provisioner
+    namespace: kubedb
+  resources:
+  - apiGroup: kubedb.com
+  - apiGroup: elasticsearch.kubedb.com
+  - apiGroup: kafka.kubedb.com
+  - apiGroup: postgres.kubedb.com
+status:
+  controllers:
+  - apiGroup: apps
+    kind: StatefulSet
+    name: kubedb-kubedb-provisioner
+    namespace: kubedb
+    pods:
+    - kubedb-kubedb-provisioner-0
+    - kubedb-kubedb-provisioner-2
+    - kubedb-kubedb-provisioner-1
+```
+
+
+ShardConfiguration -> 
+
+why db specific? 
+  resources:
+  - apiGroup: kubedb.com
+  - apiGroup: elasticsearch.kubedb.com
+  - apiGroup: kafka.kubedb.com
+  - apiGroup: postgres.kubedb.com
+
+
+apiVersion: kubedb.com/v1alpha2
+kind: MSSQLServer
+
+apiVersion: ops.kubedb.com/v1alpha1
+kind: MSSQLServerOpsRequest
+
+apiVersion: autoscaling.kubedb.com/v1alpha1
+kind: MSSQLServerAutoscaler
+
+
+
+
+
+
+
+
+
+
+
+
+➤ kubectl apply -f hack/samples/autoscaler-shardconfiguration.yaml
+shardconfiguration.operator.k8s.appscode.com/kubedb-autoscaler created
+
+➤ kubectl get shardconfiguration kubedb-autoscaler -o yaml
+apiVersion: operator.k8s.appscode.com/v1alpha1
+kind: ShardConfiguration
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"operator.k8s.appscode.com/v1alpha1","kind":"ShardConfiguration","metadata":{"annotations":{},"name":"kubedb-autoscaler"},"spec":{"controllers":[{"apiGroup":"apps","kind":"StatefulSet","name":"kubedb-kubedb-autoscaler","namespace":"kubedb"}],"resources":[{"apiGroup":"autoscaling.kubedb.com"}]}}
+  creationTimestamp: "2026-01-29T15:30:04Z"
+  finalizers:
+  - operator.k8s.appscode.com
+  generation: 1
+  name: kubedb-autoscaler
+  resourceVersion: "1106608"
+  uid: 1585d22b-fd1d-431c-b996-047fd03da72f
+spec:
+  controllers:
+  - apiGroup: apps
+    kind: StatefulSet
+    name: kubedb-kubedb-autoscaler
+    namespace: kubedb
+  resources:
+  - apiGroup: autoscaling.kubedb.com
+status:
+  controllers:
+  - apiGroup: apps
+    kind: StatefulSet
+    name: kubedb-kubedb-autoscaler
+    namespace: kubedb
+    pods:
+    - kubedb-kubedb-autoscaler-0
+    - kubedb-kubedb-autoscaler-1
+    - kubedb-kubedb-autoscaler-2
+neaj@neaj-pc:~
+➤ 
+
+
+
+➤ kubectl apply -f hack/samples/autoscaler-examples.yaml
+mssqlserverautoscaler.autoscaling.kubedb.com/mssql-autoscaler created
+postgresautoscaler.autoscaling.kubedb.com/pg-autoscaler configured
+Error from server (NotFound): error when creating "hack/samples/autoscaler-examples.yaml": admission webhook "mongodbautoscalerwebhook.validators.autoscaling.kubedb.com" denied the request: MongoDB.kubedb.com "mg-standalone" not found
+neaj@neaj-pc:~/g/s/k/operator-shard-manager|auto⚡*
+
+
+
+
+
+neaj@neaj-pc:~
+➤ kubectl get mssqlserverautoscaler -A --show-labels
+NAMESPACE   NAME               AGE     LABELS
+demo        mssql-autoscaler   2m11s   shard.operator.k8s.appscode.com/kubedb-autoscaler=1
+neaj@neaj-pc:~
+➤ kubectl get postgresautoscaler -A --show-labels
+NAMESPACE   NAME            AGE     LABELS
+demo        pg-autoscaler   3m37s   shard.operator.k8s.appscode.com/kubedb-autoscaler=0
+neaj@neaj-pc:~
+➤ 
