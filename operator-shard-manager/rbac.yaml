@@ -1,0 +1,13 @@
+kubectl patch clusterrole kubedb-kubedb-autoscaler \
+  --type='json' \
+  -p='[
+    {
+      "op": "add",
+      "path": "/rules/-",
+      "value": {
+        "apiGroups": ["operator.k8s.appscode.com"],
+        "resources": ["shardconfigurations"],
+        "verbs": ["get", "list", "watch"]
+      }
+    }
+  ]'

@@ -1,0 +1,78 @@
+apiVersion: autoscaling.kubedb.com/v1alpha1
+kind: MSSQLServerAutoscaler
+metadata:
+  name: mssql-autoscaler-standalone2
+  namespace: demo
+  # After ShardConfiguration is applied, the shard-manager will automatically add:
+  # labels:
+  #   shard.operator.k8s.appscode.com/kubedb-autoscaler: "0"  # or "1", "2", etc.
+spec:
+  databaseRef:
+    name: mssql-standalone
+  compute:
+    mssqlserver:
+      trigger: "On"
+      podLifeTimeThreshold: 5m
+      resourceDiffPercentage: 10
+      minAllowed:
+        cpu: 800m
+        memory: 2Gi
+      maxAllowed:
+        cpu: 2
+        memory: 4Gi
+      containerControlledValues: "RequestsAndLimits"
+      controlledResources: [ "cpu", "memory" ]
+
+---
+
+apiVersion: autoscaling.kubedb.com/v1alpha1
+kind: MSSQLServerAutoscaler
+metadata:
+  name: mssql-autoscaler-ag2
+  namespace: demo
+  # After ShardConfiguration is applied, the shard-manager will automatically add:
+  # labels:
+  #   shard.operator.k8s.appscode.com/kubedb-autoscaler: "0"  # or "1", "2", etc.
+spec:
+  databaseRef:
+    name: mssql-ag
+  compute:
+    mssqlserver:
+      trigger: "On"
+      podLifeTimeThreshold: 5m
+      resourceDiffPercentage: 10
+      minAllowed:
+        cpu: 800m
+        memory: 2Gi
+      maxAllowed:
+        cpu: 2
+        memory: 4Gi
+      containerControlledValues: "RequestsAndLimits"
+      controlledResources: [ "cpu", "memory" ]
+
+---
+
+apiVersion: autoscaling.kubedb.com/v1alpha1
+kind: MSSQLServerAutoscaler
+metadata:
+  name: mssql-autoscaler-dag2
+  namespace: demo
+  # After ShardConfiguration is applied, the shard-manager will automatically add:
+  # labels:
+  #   shard.operator.k8s.appscode.com/kubedb-autoscaler: "0"  # or "1", "2", etc.
+spec:
+  databaseRef:
+    name: mssql-dag
+  compute:
+    mssqlserver:
+      trigger: "On"
+      podLifeTimeThreshold: 5m
+      resourceDiffPercentage: 10
+      minAllowed:
+        cpu: 800m
+        memory: 2Gi
+      maxAllowed:
+        cpu: 2
+        memory: 4Gi
+      containerControlledValues: "RequestsAndLimits"
+      controlledResources: [ "cpu", "memory" ]
