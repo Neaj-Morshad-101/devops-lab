@@ -54,7 +54,7 @@ KubeDB autoscaler resources (e.g., `MSSQLServerAutoscaler`, `PostgresAutoscaler`
 apiVersion: operator.k8s.appscode.com/v1alpha1
 kind: ShardConfiguration
 metadata:
-  name: kubedb-kubedb-autoscaler
+  name: kubedb-autoscaler
 spec:
   controllers:
   - apiGroup: apps
@@ -86,7 +86,7 @@ env:
     fieldRef:
       fieldPath: metadata.name
 - name: SHARD_CONFIG_NAME
-  value: "kubedb-kubedb-autoscaler"
+  value: "kubedb-autoscaler"
 ```
 
 ### 4. Add Shard Filtering to Operator Code (30 minutes)
@@ -131,7 +131,7 @@ func (r *Reconciler) Reconcile(ctx context.Context, req reconcile.Request) (reco
 
 ```bash
 # Check ShardConfiguration status
-kubectl get shardconfiguration kubedb-kubedb-autoscaler -o yaml
+kubectl get shardconfiguration kubedb-autoscaler -o yaml
 
 # Verify autoscalers are labeled
 kubectl get mssqlserverautoscaler -A --show-labels
@@ -140,7 +140,7 @@ kubectl get mssqlserverautoscaler -A --show-labels
 for i in 0 1 2; do
   echo "Shard $i:"
   kubectl get autoscaling.kubedb.com -A \
-    -l "shard.operator.k8s.appscode.com/kubedb-kubedb-autoscaler=$i" --no-headers | wc -l
+    -l "shard.operator.k8s.appscode.com/kubedb-autoscaler=$i" --no-headers | wc -l
 done
 
 # Check operator logs
@@ -163,7 +163,7 @@ Create a `ShardConfiguration` that specifies:
 apiVersion: operator.k8s.appscode.com/v1alpha1
 kind: ShardConfiguration
 metadata:
-  name: kubedb-kubedb-autoscaler
+  name: kubedb-autoscaler
 spec:
   # The operator StatefulSet that manages autoscalers
   controllers:
@@ -210,7 +210,7 @@ kubectl apply -f autoscaler-shardconfiguration.yaml
 
 Verify it's working:
 ```bash
-kubectl get shardconfiguration kubedb-kubedb-autoscaler -o yaml
+kubectl get shardconfiguration kubedb-autoscaler -o yaml
 ```
 
 Expected status:
@@ -246,10 +246,10 @@ kubectl get autoscaling.kubedb.com -n demo --show-labels
 Expected labels:
 ```
 NAME                    LABELS
-mssql-autoscaler-1      shard.operator.k8s.appscode.com/kubedb-kubedb-autoscaler=0
-mssql-autoscaler-2      shard.operator.k8s.appscode.com/kubedb-kubedb-autoscaler=1
-pg-autoscaler-1         shard.operator.k8s.appscode.com/kubedb-kubedb-autoscaler=2
-pg-autoscaler-2         shard.operator.k8s.appscode.com/kubedb-kubedb-autoscaler=0
+mssql-autoscaler-1      shard.operator.k8s.appscode.com/kubedb-autoscaler=0
+mssql-autoscaler-2      shard.operator.k8s.appscode.com/kubedb-autoscaler=1
+pg-autoscaler-1         shard.operator.k8s.appscode.com/kubedb-autoscaler=2
+pg-autoscaler-2         shard.operator.k8s.appscode.com/kubedb-autoscaler=0
 ```
 
 ---
@@ -283,7 +283,7 @@ spec:
               fieldPath: metadata.name
         # ADD THIS IF NOT PRESENT
         - name: SHARD_CONFIG_NAME
-          value: "kubedb-kubedb-autoscaler"
+          value: "kubedb-autoscaler"
 ```
 
 ### B. Create Shard Helper Package
@@ -513,7 +513,7 @@ func (r *MSSQLServerAutoscalerReconciler) Reconcile(ctx context.Context, req rec
 apiVersion: operator.k8s.appscode.com/v1alpha1
 kind: ShardConfiguration
 metadata:
-  name: kubedb-kubedb-autoscaler
+  name: kubedb-autoscaler
 spec:
   controllers:
   - apiGroup: apps
@@ -607,8 +607,8 @@ When `useCooperativeShardMigration: true`, resources get a "next shard" label du
 
 ```yaml
 labels:
-  shard.operator.k8s.appscode.com/kubedb-kubedb-autoscaler: "1"        # Current shard
-  next.operator.k8s.appscode.com/kubedb-kubedb-autoscaler: "3"         # Moving to shard 3
+  shard.operator.k8s.appscode.com/kubedb-autoscaler: "1"        # Current shard
+  next.operator.k8s.appscode.com/kubedb-autoscaler: "3"         # Moving to shard 3
 ```
 
 **Operator behavior:**
@@ -628,7 +628,7 @@ This prevents reconciliation gaps during resharding.
 # Count autoscalers per shard
 for i in 0 1 2; do
   echo "Shard $i:"
-  kubectl get postgresautoscaler -A -l "shard.operator.k8s.appscode.com/kubedb-kubedb-autoscaler=$i" | wc -l
+  kubectl get postgresautoscaler -A -l "shard.operator.k8s.appscode.com/kubedb-autoscaler=$i" | wc -l
 done
 ```
 
@@ -651,9 +651,9 @@ kubectl logs -n kubedb kubedb-kubedb-autoscaler-2 | grep -i shard
 
 Expected output:
 ```
-Running with shard configuration config=kubedb-kubedb-autoscaler shard=0
-Running with shard configuration config=kubedb-kubedb-autoscaler shard=1
-Running with shard configuration config=kubedb-kubedb-autoscaler shard=2
+Running with shard configuration config=kubedb-autoscaler shard=0
+Running with shard configuration config=kubedb-autoscaler shard=1
+Running with shard configuration config=kubedb-autoscaler shard=2
 ```
 
 ### Force Relabeling
@@ -662,7 +662,7 @@ If labels are missing or incorrect:
 
 ```bash
 # Delete and recreate the ShardConfiguration
-kubectl delete shardconfiguration kubedb-kubedb-autoscaler
+kubectl delete shardconfiguration kubedb-autoscaler
 kubectl apply -f hack/samples/autoscaler-shardconfiguration.yaml
 ```
 
@@ -750,7 +750,7 @@ All KubeDB autoscaler CRs in `autoscaling.kubedb.com` are supported:
 ### What Happens Automatically
 
 ✅ operator-shard-manager discovers all autoscaler CRs  
-✅ Labels them: `shard.operator.k8s.appscode.com/kubedb-kubedb-autoscaler: "0"`  
+✅ Labels them: `shard.operator.k8s.appscode.com/kubedb-autoscaler: "0"`  
 ✅ Distributes evenly using consistent hashing  
 ✅ Watches for new autoscalers and labels them immediately  
 ✅ Handles scaling with minimal resource movement  
