@@ -1,0 +1,575 @@
+# KubeDB Autoscaler Operator - Complete Controller Setup Guide
+
+This guide explains how the KubeDB Autoscaler operator is structured, how controllers are started, how events are handled, and how shard-based filtering works for the MSSQLServerAutoscaler.
+
+---
+
+## Table of Contents
+
+1. [Architecture Overview](#architecture-overview)
+2. [Entry Point and Startup Flow](#entry-point-and-startup-flow)
+3. [Controller-Runtime Framework](#controller-runtime-framework)
+4. [MSSQLServerAutoscaler Controller Setup](#mssqlserverautoscaler-controller-setup)
+5. [Shard-Based Filtering (Detailed)](#shard-based-filtering-detailed)
+6. [Event Handling Flow](#event-handling-flow)
+7. [Reconciliation Loop](#reconciliation-loop)
+8. [Summary](#summary)
+
+---
+
+## 1. Architecture Overview
+
+The KubeDB Autoscaler is built using **controller-runtime** (from the Kubernetes SIGs project), which is the same framework used by Kubebuilder and Operator SDK. However, this project does **NOT** use Kubebuilder scaffolding directly - it uses controller-runtime primitives directly.
+
+### Key Components:
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                         KubeDB Autoscaler Operator                           │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  main.go                                                                     │
+│     │                                                                        │
+│     └──► cmds/root.go (Cobra CLI)                                           │
+│              │                                                               │
+│              └──► cmds/operator.go (NewCmdOperator)                          │
+│                       │                                                      │
+│                       └──► cmds/server/operator.go (OperatorOptions.Run)     │
+│                                │                                             │
+│                                ├──► Manager (controller-runtime)             │
+│                                │                                             │
+│                                ├──► apiextensions.RegisterSetup()            │
+│                                │       (Lazy controller registration)        │
+│                                │                                             │
+│                                └──► Per-Database Controllers                 │
+│                                        ├── MSSQLServerAutoscaler             │
+│                                        ├── PostgresAutoscaler                │
+│                                        ├── MongoDBAutoscaler                 │
+│                                        └── ... (20+ database types)          │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 2. Entry Point and Startup Flow
+
+### Step 1: main.go
+```go
+// cmd/kubedb-autoscaler/main.go
+func main() {
+    rootCmd := cmds.NewRootCmd()
+    logs.Init(rootCmd, true)
+    defer logs.FlushLogs()
+
+    if err := rootCmd.Execute(); err != nil {
+        klog.Warningln(err)
+    }
+}
+```
+
+### Step 2: Root Command (cmds/root.go)
+```go
+func NewRootCmd() *cobra.Command {
+    rootCmd := &cobra.Command{
+        Use: "kubedb-autoscaler",
+        PersistentPreRun: func(c *cobra.Command, args []string) {
+            // Register schemes
+            utilruntime.Must(scheme.AddToScheme(clientsetscheme.Scheme))
+            // ... more schemes
+        },
+    }
+    
+    ctx := genericapiserver.SetupSignalContext()
+    rootCmd.AddCommand(NewCmdWebhook(ctx))
+    rootCmd.AddCommand(NewCmdOperator(ctx))  // <-- This is the operator command
+    
+    return rootCmd
+}
+```
+
+### Step 3: Operator Command (cmds/operator.go)
+```go
+func NewCmdOperator(ctx context.Context) *cobra.Command {
+    o := server.NewOperatorOptions()  // Default options including shardConfig
+
+    cmd := &cobra.Command{
+        Use:   "operator",
+        Short: "Launch KubeDB Autoscaler",
+        RunE: func(cmd *cobra.Command, args []string) error {
+            if err := o.Complete(); err != nil { return err }
+            if err := o.Validate(); err != nil { return errors.NewAggregate(err) }
+            return o.Run(ctx)  // <-- Main entry point
+        },
+    }
+
+    o.AddFlags(cmd.Flags())  // Add CLI flags including --shard-config
+    return cmd
+}
+```
+
+### Step 4: OperatorOptions (cmds/server/operator.go)
+
+The default shard config is set here:
+
+```go
+func NewOperatorOptions() *OperatorOptions {
+    return &OperatorOptions{
+        // ...
+        shardConfig: "kubedb-autoscaler",  // <-- DEFAULT VALUE
+        // ...
+    }
+}
+
+func (s *OperatorOptions) AddGoFlags(fs *flag.FlagSet) {
+    // ...
+    fs.StringVar(&s.shardConfig, "shard-config", s.shardConfig, 
+        "Shard configuration that will be used by this operator")
+    // ...
+}
+```
+
+---
+
+## 3. Controller-Runtime Framework
+
+The operator uses **controller-runtime** (not raw Kubebuilder scaffolding) with these key concepts:
+
+### Manager
+```go
+mgr, err := manager.New(cfg, manager.Options{
+    Scheme:                 server.Scheme,
+    Metrics:                metricsserver.Options{BindAddress: s.metricsAddr},
+    HealthProbeBindAddress: s.probeAddr,
+    LeaderElection:         s.enableLeaderElection,
+    LeaderElectionID:       "5b87adeb.autoscaler.kubedb.com",
+    Cache: cache.Options{
+        SyncPeriod: &s.ResyncPeriod,
+    },
+    NewClient: cu.NewClient,
+})
+```
+
+The Manager provides:
+- **Shared caches** for all controllers
+- **Client** for Kubernetes API interactions
+- **Leader election** coordination
+- **Health/metrics endpoints**
+- **Lifecycle management** for all controllers
+
+### Lazy Controller Registration
+
+Instead of registering all controllers at startup, KubeDB uses **lazy registration** via `apiextensions.RegisterSetup`:
+
+```go
+apiextensions.RegisterSetup(schema.GroupKind{
+    Group: autoscaling.SchemeGroupVersion.Group,
+    Kind:  autoscaling.ResourceKindMSSQLServerAutoscaler,
+}, func(ctx context.Context, mgr manager.Manager) {
+    // Only executed when CRD exists in cluster
+    if s.shardConfig != "" {
+        utils.WaitForShardIdUpdate(mgr.GetClient(), s.shardConfig)
+    }
+    ms := cf.addMSSQLServerManager(mgr)
+    ms.RunControllers(ctx.Done())
+})
+```
+
+This means:
+1. The operator checks if `MSSQLServerAutoscaler` CRD exists
+2. If yes, it registers the controller
+3. If not, it skips (no errors for missing CRDs)
+
+---
+
+## 4. MSSQLServerAutoscaler Controller Setup
+
+### Reconciler Structure
+
+```go
+// pkg/controller/mssqlserver/controller.go
+type Reconciler struct {
+    client.Client                      // Kubernetes client
+    *amc.Config                        // Contains ShardConfig
+    Scheme           *runtime.Scheme   // Runtime scheme
+    UpdateInterval   time.Duration     // How often to run autoscaler loops
+    PrometheusConfig storage.PrometheusConfig
+    Recorder         record.EventRecorder
+}
+```
+
+### Controller Registration (addMSSQLServerManager)
+
+```go
+func (c controllerInfo) addMSSQLServerManager(mgr manager.Manager) *mssqlserver.Reconciler {
+    ms := &mssqlserver.Reconciler{
+        Client: c.kbClient,
+        Config: &amc.Config{
+            ShardConfig: c.shardConfig,  // <-- Shard config passed here
+        },
+        Scheme:           mgr.GetScheme(),
+        UpdateInterval:   c.updateInterval,
+        PrometheusConfig: c.promConfig,
+        Recorder:         c.recorder,
+    }
+    
+    // Setup the controller with the manager
+    if err := ms.SetupWithManager(mgr); err != nil {
+        setupLog.Error(err, "unable to create controller")
+        os.Exit(1)
+    }
+
+    // Setup audit event publishing
+    if err := c.auditor.SetupWithManager(c.ctx, mgr, &autoscaling.MSSQLServerAutoscaler{}); err != nil {
+        setupLog.Error(err, "unable to set up manager")
+        os.Exit(1)
+    }
+    return ms
+}
+```
+
+### SetupWithManager (The Key Function)
+
+This is where the controller-runtime controller is configured:
+
+```go
+func (r *Reconciler) SetupWithManager(mgr ctrl.Manager) error {
+    // Create Predicator with shard filtering
+    p := utils.NewPredicator(r.Client, schema.GroupVersionKind{
+        Group:   dbapi.SchemeGroupVersion.Group,
+        Version: dbapi.SchemeGroupVersion.Version,
+        Kind:    dbapi.ResourceKindMSSQLServer,
+    }, r.ShardConfig, nil)  // <-- ShardConfig passed here
+
+    return ctrl.NewControllerManagedBy(mgr).
+        // Watch MSSQLServerAutoscaler (primary resource)
+        For(&autoscaling.MSSQLServerAutoscaler{}, 
+            builder.ForOption(builder.WithPredicates(p.GetPredicateFuncsForDatabase()))).
+        // Watch owned MSSQLServerOpsRequest
+        Owns(&opsapi.MSSQLServerOpsRequest{}, 
+            builder.OwnsOption(builder.WithPredicates(p.GetPredicateFuncsForOwnerObjects()))).
+        Complete(r)  // r implements Reconciler interface
+}
+```
+
+### What This Does:
+
+1. **`ctrl.NewControllerManagedBy(mgr)`** - Creates a new controller builder
+2. **`.For(&autoscaling.MSSQLServerAutoscaler{})`** - Watches MSSQLServerAutoscaler as the primary resource
+3. **`.Owns(&opsapi.MSSQLServerOpsRequest{})`** - Also watches OpsRequests owned by the autoscaler
+4. **`builder.WithPredicates(...)`** - Filters which events trigger reconciliation
+5. **`.Complete(r)`** - Registers the controller with the manager
+
+---
+
+## 5. Shard-Based Filtering (Detailed)
+
+### How Sharding Works
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         Shard-Based Filtering Flow                          │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  1. operator-shard-manager labels each MSSQLServerAutoscaler CR:            │
+│     labels:                                                                 │
+│       shard.operator.k8s.appscode.com/kubedb-autoscaler: "0"                │
+│                                                                             │
+│  2. Operator pod gets its shard index from ShardConfiguration:              │
+│     Pod Name: kubedb-kubedb-autoscaler-1                                    │
+│     ShardConfiguration.Status.Controllers[].Pods:                           │
+│       - kubedb-kubedb-autoscaler-0  (shard 0)                               │
+│       - kubedb-kubedb-autoscaler-1  (shard 1)  <-- This pod                 │
+│       - kubedb-kubedb-autoscaler-2  (shard 2)                               │
+│                                                                             │
+│  3. Predicate filters events:                                               │
+│     Event for MSSQLServerAutoscaler with label shard=1?                     │
+│       └──► YES: Pass to Reconciler                                          │
+│       └──► NO:  Skip (handled by different pod)                             │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Predicator Implementation
+
+```go
+// vendor/kubedb.dev/apimachinery/pkg/utils/updater.go
+
+type Predicator interface {
+    GetOwnerObject(obj client.Object) (*unstructured.Unstructured, error)
+    GetPredicateFuncsForDatabase() predicate.Funcs
+    GetPredicateFuncsForOwnerObjects() predicate.Funcs
+}
+
+func NewPredicator(kc client.Client, gvk schema.GroupVersionKind, 
+                   shardConfig string, healthChecker *health.HealthChecker) Predicator {
+    return &dbPredicate{
+        kc:            kc,
+        shardConfig:   shardConfig,
+        healthChecker: healthChecker,
+        gvk:           gvk,
+    }
+}
+```
+
+### GetPredicateFuncsForDatabase()
+
+This returns predicate functions for Create/Update/Delete events:
+
+```go
+func (p *dbPredicate) GetPredicateFuncsForDatabase() predicate.Funcs {
+    return predicate.Funcs{
+        CreateFunc: func(e event.CreateEvent) bool {
+            obj := e.Object
+            // Check if this object belongs to our shard
+            rq := scutil.ShouldEnqueueObjectForShard(p.kc, p.shardConfig, obj.GetLabels())
+            if !rq && p.healthChecker != nil {
+                p.healthChecker.Stop(obj.GetNamespace() + "/" + obj.GetName())
+            }
+            return rq  // true = enqueue, false = skip
+        },
+
+        UpdateFunc: func(e event.UpdateEvent) bool {
+            newObj := e.ObjectNew
+            rq := scutil.ShouldEnqueueObjectForShard(p.kc, p.shardConfig, newObj.GetLabels())
+            if !rq && p.healthChecker != nil {
+                p.healthChecker.Stop(newObj.GetNamespace() + "/" + newObj.GetName())
+            }
+            return rq
+        },
+
+        DeleteFunc: func(e event.DeleteEvent) bool {
+            obj := e.Object
+            rq := scutil.ShouldEnqueueObjectForShard(p.kc, p.shardConfig, obj.GetLabels())
+            if !rq && p.healthChecker != nil {
+                p.healthChecker.Stop(obj.GetNamespace() + "/" + obj.GetName())
+            }
+            return rq
+        },
+    }
+}
+```
+
+### ShouldEnqueueObjectForShard()
+
+```go
+// vendor/kubeops.dev/operator-shard-manager/api/v1alpha1/shardconfiguration_util.go
+
+func ShouldEnqueueObjectForShard(kbClient client.Client, shardConfig string, 
+                                  labels map[string]string) bool {
+    // If no shard config, always enqueue (no sharding)
+    if shardConfig == "" {
+        return true
+    }
+    
+    // Check if labels exist
+    if labels == nil {
+        klog.Warningf("shard-config provided, but labels is nil, skip enqueuing object")
+        return false
+    }
+    
+    // Extract shard ID from labels: "shard.operator.k8s.appscode.com/kubedb-autoscaler"
+    shardId := ExtractShardKeyFromLabels(labels, shardConfig)
+    if shardId == "" {
+        klog.Warningf("shard-config provided, but no shardId found in the labels")
+        return false
+    }
+    
+    // Check if this pod should handle this shard
+    requeue, err := ShouldReconcileByShard(kbClient, shardConfig, shardId)
+    if err != nil {
+        klog.Warningf("ShouldReconcileByShard failed with err: %v", err)
+        return false
+    }
+    return requeue
+}
+
+func isShardIdAndHostnameMatched(shardId string, pods []string) bool {
+    hostName := os.Getenv("HOSTNAME")  // e.g., "kubedb-kubedb-autoscaler-1"
+    for i, pod := range pods {
+        // Pod index matches shard ID
+        if pod == hostName && strconv.Itoa(i) == shardId {
+            return true
+        }
+    }
+    return false
+}
+```
+
+### Label Format
+
+Resources are labeled by operator-shard-manager:
+```yaml
+apiVersion: autoscaling.kubedb.com/v1alpha1
+kind: MSSQLServerAutoscaler
+metadata:
+  name: mssql-autoscaler
+  labels:
+    shard.operator.k8s.appscode.com/kubedb-autoscaler: "0"  # Shard index
+```
+
+---
+
+## 6. Event Handling Flow
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                           Event Handling Flow                                │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  Kubernetes API Server                                                       │
+│       │                                                                      │
+│       │ (Watch Events)                                                       │
+│       ▼                                                                      │
+│  Controller-Runtime Informer/Cache                                           │
+│       │                                                                      │
+│       │ (Create/Update/Delete Event)                                         │
+│       ▼                                                                      │
+│  Predicate Functions (GetPredicateFuncsForDatabase)                          │
+│       │                                                                      │
+│       ├──► ShouldEnqueueObjectForShard() ──► FALSE: Skip event               │
+│       │                                                                      │
+│       └──► TRUE: Enqueue to Work Queue                                       │
+│               │                                                              │
+│               ▼                                                              │
+│  Work Queue (namespace/name key)                                             │
+│       │                                                                      │
+│       │ (Dequeue)                                                            │
+│       ▼                                                                      │
+│  Reconciler.Reconcile(ctx, Request{NamespacedName})                          │
+│       │                                                                      │
+│       ├──► Fetch MSSQLServerAutoscaler                                       │
+│       ├──► Fetch referenced MSSQLServer database                             │
+│       ├──► Check if deleted (DeletionTimestamp != nil)                       │
+│       ├──► Ensure VPA (Vertical Pod Autoscaler) exists                       │
+│       └──► Return Result (requeue or not)                                    │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 7. Reconciliation Loop
+
+The MSSQLServerAutoscaler has two additional loops beyond the main reconciler:
+
+### Main Reconciler (reconciler.go)
+```go
+func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+    klog.Infoln("started processing, key:", req.NamespacedName)
+
+    // 1. Fetch the autoscaler
+    var obj autoscaling.MSSQLServerAutoscaler
+    err := r.Get(ctx, req.NamespacedName, &obj)
+    if err != nil {
+        return ctrl.Result{}, err
+    }
+
+    // 2. Fetch the referenced database
+    var db olddbapi.MSSQLServer
+    err = r.Get(context.TODO(), types.NamespacedName{
+        Name:      scaler.Spec.DatabaseRef.Name,
+        Namespace: namespace,
+    }, &db)
+    if err != nil {
+        return ctrl.Result{}, err
+    }
+
+    // 3. Check if being deleted
+    if scaler.DeletionTimestamp != nil {
+        return ctrl.Result{}, nil
+    }
+
+    // 4. Check if compute autoscaling is configured
+    if scaler.Spec.Compute == nil {
+        return ctrl.Result{}, nil
+    }
+
+    // 5. Ensure VPA exists for the database
+    e := ensureVPA{kbClient: r.Client, scaler: scaler, db: &db}
+    err = e.ensureVPA()
+    return ctrl.Result{}, err
+}
+```
+
+### Compute Autoscaler Loop (compute_autoscaler.go)
+```go
+func (r *Reconciler) RunComputeAutoscaler(stopCh <-chan struct{}) {
+    updater := r.NewComputeAutoscaler()
+    klog.Info("Starting MSSQLServer Compute Autoscaler loop")
+    
+    // Run every UpdateInterval (default: 1 minute)
+    go wait.Until(updater.RunComputeAutoscalerOnce, r.UpdateInterval, stopCh)
+    
+    <-stopCh
+    klog.Info("Stopping MSSQLServer Compute Autoscaler loop")
+}
+```
+
+### Storage Autoscaler Loop (storage_autoscaler.go)
+```go
+func (r *Reconciler) RunStorageAutoscaler(stopCh <-chan struct{}) {
+    updater := r.NewStorageAutoscaler()
+    klog.Info("Starting MSSQLServer Storage Autoscaler loop")
+    
+    go wait.Until(updater.RunStorageAutoscalerOnce, r.UpdateInterval, stopCh)
+    
+    <-stopCh
+    klog.Info("Stopping MSSQLServer Storage Autoscaler loop")
+}
+```
+
+### Controller Startup (RunControllers)
+```go
+func (r *Reconciler) RunControllers(stopCh <-chan struct{}) {
+    go r.RunComputeAutoscaler(stopCh)   // Start compute autoscaler loop
+    go r.RunStorageAutoscaler(stopCh)   // Start storage autoscaler loop
+}
+```
+
+---
+
+## 8. Summary
+
+### Is it Kubebuilder?
+
+**Not directly.** The operator uses **controller-runtime** (the library that Kubebuilder generates code for), but:
+- No Kubebuilder scaffolding
+- Custom project structure
+- Lazy controller registration via `apiextensions.RegisterSetup`
+- Manual controller setup
+
+### Key Components for MSSQLServerAutoscaler
+
+| Component | File | Purpose |
+|-----------|------|---------|
+| Entry Point | `cmd/kubedb-autoscaler/main.go` | CLI initialization |
+| Operator Command | `pkg/cmds/operator.go` | Starts the operator |
+| Controller Setup | `pkg/cmds/server/operator.go` | Manager + controller registration |
+| MSSQLServer Reconciler | `pkg/controller/mssqlserver/controller.go` | `SetupWithManager()` + `Reconcile()` |
+| Compute Autoscaler | `pkg/controller/mssqlserver/compute_autoscaler.go` | CPU/Memory scaling logic |
+| Storage Autoscaler | `pkg/controller/mssqlserver/storage_autoscaler.go` | PVC scaling logic |
+| Predicator (Shard Filter) | `vendor/kubedb.dev/apimachinery/pkg/utils/updater.go` | Event filtering |
+| Shard Utils | `vendor/kubeops.dev/operator-shard-manager/api/v1alpha1/shardconfiguration_util.go` | Shard ID matching |
+
+### Shard Filtering Flow
+
+1. **operator-shard-manager** labels each `MSSQLServerAutoscaler` CR with `shard.operator.k8s.appscode.com/kubedb-autoscaler: "<index>"`
+2. **Predicator** checks if the event's resource label matches this pod's shard index
+3. **Only matching events** are enqueued for reconciliation
+4. **Non-matching events** are silently dropped (handled by other operator pods)
+
+### Default Shard Config
+
+The default shard configuration name is `"kubedb-autoscaler"`, set in:
+```go
+// pkg/cmds/server/operator.go
+func NewOperatorOptions() *OperatorOptions {
+    return &OperatorOptions{
+        shardConfig: "kubedb-autoscaler",  // DEFAULT
+        // ...
+    }
+}
+```
+
+This can be overridden with the `--shard-config` CLI flag.
