@@ -1,7 +1,7 @@
 apiVersion: autoscaling.kubedb.com/v1alpha1
 kind: MSSQLServerAutoscaler
 metadata:
-  name: mssql-autoscaler-standalone2
+  name: mssql-autoscaler-4444444444444444444444444444444444
   namespace: demo
   # After ShardConfiguration is applied, the shard-manager will automatically add:
   # labels:
@@ -28,7 +28,7 @@ spec:
 apiVersion: autoscaling.kubedb.com/v1alpha1
 kind: MSSQLServerAutoscaler
 metadata:
-  name: mssql-autoscaler-ag2
+  name: mssql-autoscaler-555555555555555555555555555555555555555
   namespace: demo
   # After ShardConfiguration is applied, the shard-manager will automatically add:
   # labels:
@@ -55,7 +55,7 @@ spec:
 apiVersion: autoscaling.kubedb.com/v1alpha1
 kind: MSSQLServerAutoscaler
 metadata:
-  name: mssql-autoscaler-dag2
+  name: mssql-autoscaler-6666666666666666666666666666666666666666
   namespace: demo
   # After ShardConfiguration is applied, the shard-manager will automatically add:
   # labels:
