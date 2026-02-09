@@ -1,3 +1,76 @@
+➤ docker run -d --name minio \
+        -p 9000:9000 -p 9001:9001 \
+        -e MINIO_ROOT_USER=minioadmin \
+        -e MINIO_ROOT_PASSWORD=minioadmin \
+        minio/minio:latest server /data --console-address ":9001"
+
+529aef5f0d9be89a8057a89cb4dc92b1b88538114274f13639a1fa9e265d1be6
+
+
+
+neaj@neaj-pc:~/g/s/g/N/devops-lab|main✓
+➤ docker ps
+
+CONTAINER ID   IMAGE                  COMMAND                  CREATED          STATUS          PORTS                                                             NAMES
+529aef5f0d9b   minio/minio:latest     "/usr/bin/docker-ent…"   17 seconds ago   Up 16 seconds   0.0.0.0:9000-9001->9000-9001/tcp, [::]:9000-9001->9000-9001/tcp   minio
+
+
+
+neaj@neaj-pc:~/g/s/g/N/devops-lab|main✓
+  wget https://dl.min.io/client/mc/release/linux-amd64/mc
+  chmod +x mc
+  sudo mv mc /usr/local/bin/
+
+
+neaj@neaj-pc:~/g/s/g/N/devops-lab|main✓
+➤ mc alias set myminio http://localhost:9000 minioadmin minioadmin
+
+Added `myminio` successfully.
+
+
+
+neaj@neaj-pc:~/g/s/g/N/devops-lab|main✓
+➤ mc ls myminio
+[2026-02-09 19:56:49 +06]     0B neaj/
+
+
+neaj@neaj-pc:~/g/s/g/N/devops-lab|main✓
+➤ mc mb myminio/mybucket
+Bucket created successfully `myminio/mybucket`.
+
+
+neaj@neaj-pc:~/g/s/g/N/devops-lab|main✓
+➤ mc cp installation-guides.txt myminio/mybucket/
+
+➤ mc cp myminio/neaj/lasttttttttttttt/final-1.pdf ./
+...tttttttt/final-1.pdf: 141.93 MiB / 141.93 MiB ┃▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓┃ 1019.17 MiB/s 0s
+
+
+
+➤ mc rb myminio/mybucket
+mc: <ERROR> `myminio/mybucket` is not empty. Retry this command with ‘--force’ flag if you want to remove `myminio/mybucket` and all its contents 
+
+➤ mc ls myminio/mybucket
+[2026-02-09 19:59:49 +06] 9.8KiB STANDARD installation-guides.txt
+
+
+➤ mc rb myminio/mybucket --force
+Removed `myminio/mybucket` successfully.
+
+neaj@neaj-pc:~/g/s/g/N/devops-lab|main⚡?
+➤ mc ls myminio
+[2026-02-09 19:56:49 +06]     0B neaj/
+
+
+
+
+
+
+
+
+
+k8s:
+
 tenant-base.yaml file is for generating 2 pods 
 ￼
 
