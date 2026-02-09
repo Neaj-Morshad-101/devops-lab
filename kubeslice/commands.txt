@@ -1,0 +1,6 @@
+helm upgrade -i kubeslice-controller oci://ghcr.io/appscode-charts/kubeslice-controller \
+    --version v2025.7.31 \
+    -f controller.yaml \
+    --namespace kubeslice-controller \
+    --create-namespace \
+    --wait --burst-limit=10000 --debug
