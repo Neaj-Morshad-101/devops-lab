@@ -1,0 +1,6 @@
+finalized:
+shard snapshot: pod -> shard snap for collection A (shard-3,repl-2)
+5 nodes: pod-0, pod-1 (s), pod-2(s), pod-3, pod-4 (s)
+3 nodes: pod-0 (s), pod-1 (s), pod-2 (s)
+
+
