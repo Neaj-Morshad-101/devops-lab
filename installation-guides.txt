@@ -214,7 +214,7 @@ kubectl view-secret -n monitoring prometheus-grafana -a
 
 
 
-
+Alerts:
 helm upgrade -i coreos-prom-memcd charts/memcached-alerts -n demo 
     --create-namespace 
     --version=v2023.05.09 

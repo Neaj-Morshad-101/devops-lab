@@ -4,3 +4,4 @@ shard snapshot: pod -> shard snap for collection A (shard-3,repl-2)
 3 nodes: pod-0 (s), pod-1 (s), pod-2 (s)
 
 
+prometheus -> svc monitor lable -> svm -> stat-svc -> pod 

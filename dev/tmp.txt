@@ -1,4 +1,53 @@
+2026-02-24T07:26:31Z
 
+
+
+
+
+
+
+
+
+
+
+Hint based routing site: 
+done.
+================================================================================
+systemReplicationStatus.py
+================================================================================
+----- hana-cluster-0 systemReplicationStatus.py -----
+|Database            |Host           |Port  |Service Name |Volume ID |Site ID |Site Name           |Secondary      |Secondary |Secondary |Secondary           |Secondary     |Replication |Replication |Replication    |Secondary    |
+|                    |               |      |             |          |        |                    |Host           |Port      |Site ID   |Site Name           |Active Status |Mode        |Status      |Status Details |Fully Synced |
+|------------------- |-------------- |----- |------------ |--------- |------- |------------------- |-------------- |--------- |--------- |------------------- |------------- |----------- |----------- |-------------- |------------ |
+|SYSTEMDB            |hana-cluster-0 |39001 |nameserver   |        1 |      1 |SITE_hana-cluster-0 |hana-cluster-1 |    39001 |        3 |SITE_hana-cluster-1 |YES           |SYNC        |ACTIVE      |               |        True |
+|KUBEDB_HEALTH_CHECK |hana-cluster-0 |39043 |indexserver  |        2 |      1 |SITE_hana-cluster-0 |hana-cluster-1 |    39043 |        3 |SITE_hana-cluster-1 |YES           |SYNC        |ACTIVE      |               |        True |
+|HXE                 |hana-cluster-0 |39040 |indexserver  |        2 |      1 |SITE_hana-cluster-0 |hana-cluster-1 |    39040 |        3 |SITE_hana-cluster-1 |YES           |SYNC        |ACTIVE      |               |        True |
+|SYSTEMDB            |hana-cluster-0 |39001 |nameserver   |        1 |      1 |SITE_hana-cluster-0 |hana-cluster-2 |    39001 |        2 |SITE_hana-cluster-2 |YES           |SYNC        |ACTIVE      |               |        True |
+|KUBEDB_HEALTH_CHECK |hana-cluster-0 |39043 |indexserver  |        2 |      1 |SITE_hana-cluster-0 |hana-cluster-2 |    39043 |        2 |SITE_hana-cluster-2 |YES           |SYNC        |ACTIVE      |               |        True |
+|HXE                 |hana-cluster-0 |39040 |indexserver  |        2 |      1 |SITE_hana-cluster-0 |hana-cluster-2 |    39040 |        2 |SITE_hana-cluster-2 |YES           |SYNC        |ACTIVE      |               |        True |
+
+status system replication site "3": ACTIVE
+status system replication site "2": ACTIVE
+overall system replication status: ACTIVE
+
+
+
+
+
+
+
+backup -> connect -> delete ?
+
+log backup running ? 
+
+
+
+dir/trusted/ca.crt 
+
+server/certs
+client/certs 
+
+bolt, http, cluster 
 
 
 
