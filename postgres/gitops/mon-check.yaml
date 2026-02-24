@@ -5,16 +5,16 @@ metadata:
   namespace: demo
 spec:
   deletionPolicy: Delete
-  monitor:
-    agent: prometheus.io/operator
-    prometheus:
-      exporter:
-        args:
-        - --no-collector.stat_bgwriter
-        port: 56790
-      serviceMonitor:
-        labels:
-          release: prometheus
+  # monitor:
+  #   agent: prometheus.io/operator
+  #   prometheus:
+  #     exporter:
+  #       args:
+  #       - --no-collector.stat_bgwriter
+  #       port: 56790
+  #     serviceMonitor:
+  #       labels:
+  #         release: prometheus
   replicas: 3
   standbyMode: Hot
   storage:
