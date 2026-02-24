@@ -20,11 +20,16 @@ argocd-server-c9cdf8dc-8p6dn                        1/1     Running   1 (175m ag
 
 kubectl port-forward svc/argocd-server -n argocd 8080:443
 
-
+# print initial admin password
 ➤ kubectl get secret argocd-initial-admin-secret -n argocd \
         -o jsonpath="{.data.password}" | base64 -d && echo
 **********
 
+# insecure because port-forward uses a k8s-generated cert
+argocd login localhost:8080 \
+  --username admin \
+  --password "$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d)" \
+  --insecure
 
 ➤ argocd login localhost:8080 --insecure
 Username: admin
@@ -40,7 +45,7 @@ Context 'localhost:8080' updated
 
 
 argocd repo add https://github.com/neaj-morshad-101/devops-lab
-
+argocd repo add https://github.com/neaj-morshad-101/devops-lab --insecure-ignore-host-key
 
 devops-lab/
   └── postgres/gitops/
@@ -57,32 +62,9 @@ argocd app create kubedb \
 
 
 argocd app list
+argocd app get kubedb
 argocd app get mongodb-app
 kubectl get pods
-
-
-
-
-# print initial admin password
-kubectl -n argocd get secret argocd-initial-admin-secret \
-  -o jsonpath="{.data.password}" | base64 -d ; echo
-
-# insecure because port-forward uses a k8s-generated cert
-argocd login localhost:8080 \
-  --username admin \
-  --password "$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d)" \
-  --insecure
-
-
-argocd repo add https://github.com/neaj-morshad-101/devops-lab --insecure-ignore-host-key
-
-
-
-argocd login localhost:8080
-
-
-kubectl port-forward svc/argocd-server -n argocd 8080:443
-
 
 argocd app sync kubedb
 argocd app set kubedb --sync-policy automated
