@@ -21,11 +21,11 @@ spec:
         memory: 256Mi
         storage: 5Gi
   deletionPolicy: Delete
-  # configuration:
-  #   secretName: pg-configuration
-  #   inline:
-  #     user.conf: |
-  #       wal_level = logical
+  configuration:
+    secretName: pg-configuration
+    inline:
+      user.conf: |
+        wal_level = logical
   healthChecker:
     failureThreshold: 2
     periodSeconds: 10

@@ -15,3 +15,6 @@ which cache is needed for sql client ping?
 Todos:
 operator temp config volume -> default config volume 
 init-docker remove sleep 10 from init-script/run.sh and sleep 20 from scrits/run.sh -> ping check?
+
+
+
