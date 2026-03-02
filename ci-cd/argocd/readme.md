@@ -7,7 +7,7 @@ sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
 rm argocd-linux-amd64
 
 
-➤ kubectl get pods -n argocd
+kubectl get pods -n argocd
 NAME                                                READY   STATUS    RESTARTS       AGE
 argocd-application-controller-0                     1/1     Running   1 (175m ago)   20h
 argocd-applicationset-controller-5b5ccc9759-wkrrz   1/1     Running   1 (175m ago)   20h
@@ -31,12 +31,14 @@ argocd login localhost:8080 \
   --password "$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d)" \
   --insecure
 
+<!-- .
 ➤ argocd login localhost:8080 --insecure
 Username: admin
 Password: *********
 'admin:login' logged in successfully
 Context 'localhost:8080' updated
-
+.
+ -->
 
 
 
@@ -45,7 +47,7 @@ Context 'localhost:8080' updated
 
 
 argocd repo add https://github.com/neaj-morshad-101/devops-lab
-argocd repo add https://github.com/neaj-morshad-101/devops-lab --insecure-ignore-host-key
+<!-- argocd repo add https://github.com/neaj-morshad-101/devops-lab --insecure-ignore-host-key -->
 
 devops-lab/
   └── postgres/gitops/

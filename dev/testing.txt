@@ -1,3 +1,11 @@
+testing remaining: 
+gitops: monitoring remove, reconfigure tls for (ssl mode, clienttls, requiressql for pg, ms, my, md)
+mssql, proyxql, provitioning, one ops 
+
+
+
+
+
 script issue: std test done, ag done 
 
 reconfigure test: start with version cu0 

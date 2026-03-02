@@ -1,27 +1,27 @@
-# apiVersion: gitops.kubedb.com/v1alpha1
-# kind: Postgres
-# metadata:
-#   name: monitoring-check
-#   namespace: demo
-# spec:
-#   deletionPolicy: Delete
-#   # monitor:
-#   #   agent: prometheus.io/operator
-#   #   prometheus:
-#   #     exporter:
-#   #       args:
-#   #       - --no-collector.stat_bgwriter
-#   #       port: 56790
-#   #     serviceMonitor:
-#   #       labels:
-#   #         release: prometheus
-#   replicas: 3
-#   standbyMode: Hot
-#   storage:
-#     accessModes:
-#     - ReadWriteOnce
-#     resources:
-#       requests:
-#         storage: 5Gi
-#   storageType: Durable
-#   version: "17.5"
+apiVersion: gitops.kubedb.com/v1alpha1
+kind: Postgres
+metadata:
+  name: monitoring-check
+  namespace: demo
+spec:
+  deletionPolicy: Delete
+  # monitor:
+  #   agent: prometheus.io/operator
+  #   prometheus:
+  #     exporter:
+  #       args:
+  #       - --no-collector.stat_bgwriter
+  #       port: 56790
+  #     serviceMonitor:
+  #       labels:
+  #         release: prometheus
+  replicas: 3
+  standbyMode: Hot
+  storage:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 5Gi
+  storageType: Durable
+  version: "17.5"

@@ -1,3 +1,51 @@
+
+
+
+
+es gitsyncer 
+
+
+configuration:
+    inline:
+      user.conf: |2
+
+
+        #________******kubedb.com/inline-config******________#
+        wal_level=logical
+    secretName: pg-configuration
+
+
+
+
+
+  configuration:
+    applyConfig:
+      user.conf: |
+        wal_level = logical
+    restart: auto
+
+
+
+cd $WEBSITE_ROOT
+ make docs-skip-assets
+
+
+using product_listing_file= /home/runner/runner/_work/docs/website/data/products/kubedb.json
+
+[golang-sh]$ git clone --no-recurse-submodules https://github.com/kubedb/docs.git
+226
+
+[golang-sh]$ git clone --no-recurse-submodules https://github.com/kubedb/docs.git
+Cloning into 'docs'...
+/tmp/workspace/kubedb/docs
+[golang-sh]$ git fetch --all
+Fetching origin
+[golang-sh]$ git checkout v2026.2.26
+error: pathspec 'v2026.2.26' did not match any file(s) known to git
+Error: exit status 1
+
+
+
 clustering mode: 
 
 
