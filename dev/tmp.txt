@@ -1,4 +1,26 @@
+Kafka Schema registry: 
 
+Memcached image build:
+1.6.40-alpine_20260304_linux_amd64
+
+ghcr.io/appscode-images/daily/memcached:1.6.40-alpine_20260304 
+ghcr.io/appscode-images/daily/memcached:1.6.40-alpine_20260304_linux_arm64 
+ghcr.io/appscode-images/daily/memcached:1.6.40-alpine_20260304_linux_amd64
+
+
+RabbitMQ:
+Promote after testing: 4.2.4-management-alpine-20260304
+
+Two architecture-specific images
+ghcr.io/appscode-images/daily/rabbitmq:4.2.4-management-alpine_20260304_linux_arm64
+ghcr.io/appscode-images/daily/rabbitmq:4.2.4-management-alpine_20260304_linux_amd64
+
+Final Image:
+ghcr.io/appscode-images/daily/rabbitmq:4.2.4-management-alpine_20260304
+
+Reference PR: 
+https://github.com/appscode-images/builder/commit/6f4b2da4e351e86bcd013103e905fa1a61f04fc3
+https://github.com/appscode-images/builder/pull/71
 
 
 
