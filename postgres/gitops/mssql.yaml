@@ -1,0 +1,58 @@
+apiVersion: kubedb.com/v1alpha2
+kind: MSSQLServer
+metadata:
+  name: std
+  namespace: demo
+spec:
+  version: "2025-cu0"
+  storageType: Durable
+  tls:
+    issuerRef:
+      name: mssqlserver-ca-issuer
+      kind: Issuer
+      apiGroup: "cert-manager.io"
+    clientTLS: false
+  # configSecret: 
+  #   name: ms-custom-config
+  #   # inline:
+  #   #   mssql.conf: |-
+  #   #     [memory]
+  #   #     memorylimitmb = 2596
+  #   #     [network]
+  #   #     tcpport = 1433
+  podTemplate:
+    spec:
+      containers:
+      - name: mssql
+        env:
+        - name: ACCEPT_EULA
+          value: "Y"
+        - name: MSSQL_PID
+          value: Evaluation
+        # resources:
+        #   limits:
+        #     memory: 4Gi
+        #   requests:
+        #     cpu: "1.5"
+        #     memory: 2Gi
+  # init:
+  #   script:
+  #     configMap:
+  #       name: mssql-init-scripts
+  # monitor:
+  #   agent: prometheus.io/operator
+  #   prometheus:
+  #     exporter:
+  #       port: 9399
+  #     serviceMonitor:
+  #       labels:
+  #         release: prometheus
+  #       interval: 10s
+  storage:
+    # storageClassName: "longhorn"
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 10Gi
+  deletionPolicy: WipeOut

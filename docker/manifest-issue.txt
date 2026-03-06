@@ -1,0 +1,6 @@
+ghcr.io/kubedb/rabbitmq-init:4.0.4
+
+➤ docker manifest create -a ghcr.io/kubedb/rabbitmq-init:latest \
+        ghcr.io/kubedb/rabbitmq-init:_linux_amd64 \
+        ghcr.io/kubedb/rabbitmq-init:_linux_arm64
+Created manifest list ghcr.io/kubedb/rabbitmq-init:latest
