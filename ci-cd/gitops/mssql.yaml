@@ -1,7 +1,7 @@
-apiVersion: kubedb.com/v1alpha2
+apiVersion: gitops.kubedb.com/v1alpha1
 kind: MSSQLServer
 metadata:
-  name: std
+  name: standalone
   namespace: demo
 spec:
   version: "2025-cu0"

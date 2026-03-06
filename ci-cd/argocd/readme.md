@@ -55,13 +55,20 @@ devops-lab/
 
 
 
-argocd app create kubedb \
+<!-- argocd app create kubedb \
   --repo https://github.com/neaj-morshad-101/devops-lab \
   --path postgres/gitops \
   --dest-server https://kubernetes.default.svc \
   --dest-namespace default \
-  --sync-policy automated
+  --sync-policy automated -->
 
+
+argocd app create kubedb \
+  --repo https://github.com/neaj-morshad-101/devops-lab \
+  --path ci-cd/gitops \
+  --dest-server https://kubernetes.default.svc \
+  --dest-namespace default \
+  --sync-policy automated
 
 argocd app list
 argocd app get kubedb

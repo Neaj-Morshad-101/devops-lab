@@ -1,11 +1,11 @@
 apiVersion: ops.kubedb.com/v1alpha1
-kind: MSSQLServerOpsRequest
+kind: ProxySQLOpsRequest
 metadata:
-  name: msops-restart
+  name: restart
   namespace: demo
 spec:
   type: Restart
-  databaseRef:
-    name: std
+  proxyRef:
+    name: mysql-proxy843
   timeout: 3m
-  apply: IfReady
+  apply: Always
