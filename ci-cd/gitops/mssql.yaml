@@ -11,7 +11,7 @@ spec:
       name: mssqlserver-ca-issuer
       kind: Issuer
       apiGroup: "cert-manager.io"
-    clientTLS: false
+    clientTLS: true
   # configSecret: 
   #   name: ms-custom-config
   #   # inline:
