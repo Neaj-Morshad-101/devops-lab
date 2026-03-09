@@ -68,7 +68,21 @@ spec:
   #     podPlacementPolicy:
   #       name: default
   replicas: 1
-  # sslMode: require
+  sslMode: verify-full
+  tls:
+    issuerRef:
+      apiGroup: cert-manager.io
+      name: mssqlserver-ca-issuer
+      kind: Issuer
+    certificates:
+    - alias: server
+      subject:
+        organizations:
+        - kubedb:server
+      dnsNames:
+      - localhost
+      ipAddresses:
+      - "127.0.0.1" 
   # standbyMode: Hot
   storage:
     accessModes:
