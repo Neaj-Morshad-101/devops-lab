@@ -18,6 +18,13 @@ spec:
   #       - kubedb.com
   #     emailAddresses:
   #     - abc@kubedb.com
+  monitor:
+    agent: prometheus.io/operator
+    prometheus:
+      serviceMonitor:
+        labels:
+          release: prometheus
+        interval: 10s
   replicas: 1
   storageType: Durable
   storage:
