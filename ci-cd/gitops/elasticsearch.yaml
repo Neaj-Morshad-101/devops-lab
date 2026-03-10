@@ -1,37 +1,37 @@
-apiVersion: gitops.kubedb.com/v1alpha1
-kind: Elasticsearch
-metadata:
-  name: es-quickstart
-  namespace: demo
-spec:
-  version: xpack-8.2.3
-  enableSSL: false
-  # tls:
-  #   issuerRef:
-  #     apiGroup: "cert-manager.io"
-  #     kind: Issuer
-  #     name: mssqlserver-ca-issuer
-  #   certificates:
-  #   - alias: http
-  #     subject:
-  #       organizations:
-  #       - kubedb.com
-  #     emailAddresses:
-  #     - abc@kubedb.com
-  monitor:
-    agent: prometheus.io/operator
-    prometheus:
-      serviceMonitor:
-        labels:
-          release: prometheus
-        interval: 10s
-  replicas: 1
-  storageType: Durable
-  storage:
-    storageClassName: "standard"
-    accessModes:
-      - ReadWriteOnce
-    resources:
-      requests:
-        storage: 1Gi
-  deletionPolicy: Delete
+# apiVersion: gitops.kubedb.com/v1alpha1
+# kind: Elasticsearch
+# metadata:
+#   name: es-quickstart
+#   namespace: demo
+# spec:
+#   version: xpack-8.2.3
+#   enableSSL: false
+#   # tls:
+#   #   issuerRef:
+#   #     apiGroup: "cert-manager.io"
+#   #     kind: Issuer
+#   #     name: mssqlserver-ca-issuer
+#   #   certificates:
+#   #   - alias: http
+#   #     subject:
+#   #       organizations:
+#   #       - kubedb.com
+#   #     emailAddresses:
+#   #     - abc@kubedb.com
+#   monitor:
+#     agent: prometheus.io/operator
+#     prometheus:
+#       serviceMonitor:
+#         labels:
+#           release: prometheus
+#         interval: 10s
+#   replicas: 1
+#   storageType: Durable
+#   storage:
+#     storageClassName: "standard"
+#     accessModes:
+#       - ReadWriteOnce
+#     resources:
+#       requests:
+#         storage: 1Gi
+#   deletionPolicy: Delete
