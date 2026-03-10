@@ -1,31 +1,31 @@
-apiVersion: gitops.kubedb.com/v1alpha1
-kind: MySQL
-metadata:
-  name: mysql
-  namespace: demo
-spec:
-  version: "9.1.0"
-  requireSSL: true
-  tls:
-    issuerRef:
-      apiGroup: cert-manager.io
-      kind: Issuer
-      name: mssqlserver-ca-issuer
-    certificates:
-    - alias: server
-      subject:
-        organizations:
-        - kubedb:server
-      dnsNames:
-      - localhost
-      ipAddresses:
-      - "127.0.0.1"
-  storageType: Durable
-  storage:
-    storageClassName: "standard"
-    accessModes:
-      - ReadWriteOnce
-    resources:
-      requests:
-        storage: 1Gi
-  deletionPolicy: Delete
+# apiVersion: gitops.kubedb.com/v1alpha1
+# kind: MySQL
+# metadata:
+#   name: mysql
+#   namespace: demo
+# spec:
+#   version: "9.1.0"
+#   requireSSL: true
+#   tls:
+#     issuerRef:
+#       apiGroup: cert-manager.io
+#       kind: Issuer
+#       name: mssqlserver-ca-issuer
+#     certificates:
+#     - alias: server
+#       subject:
+#         organizations:
+#         - kubedb:server
+#       dnsNames:
+#       - localhost
+#       ipAddresses:
+#       - "127.0.0.1"
+#   storageType: Durable
+#   storage:
+#     storageClassName: "standard"
+#     accessModes:
+#       - ReadWriteOnce
+#     resources:
+#       requests:
+#         storage: 1Gi
+#   deletionPolicy: Delete
