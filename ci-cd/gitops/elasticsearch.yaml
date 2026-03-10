@@ -5,19 +5,19 @@ metadata:
   namespace: demo
 spec:
   version: xpack-8.2.3
-  enableSSL: true
-  tls:
-    issuerRef:
-      apiGroup: "cert-manager.io"
-      kind: Issuer
-      name: mssqlserver-ca-issuer
-    certificates:
-    - alias: http
-      subject:
-        organizations:
-        - kubedb.com
-      emailAddresses:
-      - abc@kubedb.com
+  enableSSL: false
+  # tls:
+  #   issuerRef:
+  #     apiGroup: "cert-manager.io"
+  #     kind: Issuer
+  #     name: mssqlserver-ca-issuer
+  #   certificates:
+  #   - alias: http
+  #     subject:
+  #       organizations:
+  #       - kubedb.com
+  #     emailAddresses:
+  #     - abc@kubedb.com
   replicas: 1
   storageType: Durable
   storage:
