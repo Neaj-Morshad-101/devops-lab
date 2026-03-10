@@ -68,7 +68,8 @@ spec:
   #     podPlacementPolicy:
   #       name: default
   replicas: 1
-  sslMode: require # require # verify-full
+  sslMode: verify-full # require # verify-full
+  clientAuthMode: cert
   tls:
     issuerRef:
       apiGroup: cert-manager.io
