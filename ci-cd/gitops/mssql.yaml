@@ -39,21 +39,21 @@ spec:
   #   script:
   #     configMap:
   #       name: mssql-init-scripts
-  # monitor:
-  #   agent: prometheus.io/operator
-  #   prometheus:
-  #     exporter:
-  #       port: 9399
-  #       resources:  
-  #        limits:
-  #          memory: 512Mi
-  #        requests:
-  #          cpu: 200m
-  #          memory: 256Mi
-  #     serviceMonitor:
-  #       interval: 10s
-  #       labels:
-  #         release: prometheus
+  monitor:
+    agent: prometheus.io/operator
+    prometheus:
+      exporter:
+        port: 9399
+        resources:  
+         limits:
+           memory: 512Mi
+         requests:
+           cpu: 200m
+           memory: 256Mi
+      serviceMonitor:
+        interval: 10s
+        labels:
+          release: prometheus
   storage:
     # storageClassName: "longhorn"
     accessModes:
