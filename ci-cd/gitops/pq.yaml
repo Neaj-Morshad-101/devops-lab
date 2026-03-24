@@ -7,11 +7,11 @@ spec:
   # # allowedSchemas:
   # #   namespaces:
   # #     from: Same
-  # # authSecret:
-  # #   apiGroup: ""
-  # #   externallyManaged: true
-  # #   kind: Secret
-  # #   name: grafana-db-auth
+  authSecret:
+    apiGroup: ""
+    # externallyManaged: true
+    kind: Secret
+    name: pg-auth-secret
   # arbiter:
   #   resources:
   #     limits:

@@ -12,12 +12,12 @@ spec:
       kind: Issuer
       apiGroup: "cert-manager.io"
     clientTLS: false
-  configuration:
-    secretName: ms-custom-config
-    inline:
-      mssql.conf: |-
-        [memory]
-        memorylimitmb = 2048
+  # configuration:
+  #   secretName: ms-custom-config
+  #   inline:
+  #     mssql.conf: |-
+  #       [memory]
+  #       memorylimitmb = 2048
   podTemplate:
     spec:
       containers:
@@ -28,8 +28,8 @@ spec:
         - name: MSSQL_PID
           value: Evaluation
         resources:
-          limits:
-            memory: 4Gi
+          # limits:
+          #   memory: 4Gi
           requests:
             cpu: "1.5"
             memory: 2Gi

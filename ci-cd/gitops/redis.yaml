@@ -1,0 +1,54 @@
+apiVersion: gitops.kubedb.com/v1alpha1
+kind: Redis
+metadata:
+  name: rd-standalone
+  namespace: demo
+spec:
+  version: 8.2.2
+  authSecret:
+    name: rd-auth-secret
+    kind: Secret
+    # externallyManaged: true
+  configuration:
+    inline:
+      redis.conf: |-
+        maxclients 3000 
+
+  # tls:
+  #   issuerRef:  
+  #     apiGroup: "cert-manager.io"
+  #     kind: Issuer
+  #     name: redis-ca-issuer
+  storageType: Durable
+  storage:
+    # storageClassName: "longhorn" # "standard" # "longhorn"
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 1Gi
+  podTemplate:
+    spec:
+      containers:
+      - name: redis
+        resources:
+          requests:
+            cpu: 150m
+            memory: 150Mi
+          limits:
+            cpu: "200m"
+            memory: "200Mi"
+  # monitor:
+  #   agent: prometheus.io/operator
+  #   prometheus:
+  #     exporter:
+  #       resources:
+  #         requests:
+  #           cpu: "150m"
+  #           memory: "150Mi"
+  #     serviceMonitor:
+  #       labels:
+  #         release: prometheus
+  #       interval: 10s
+  deletionPolicy: WipeOut
+
