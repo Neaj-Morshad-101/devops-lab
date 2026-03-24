@@ -5,14 +5,17 @@ metadata:
   namespace: demo
 spec:
   version: 8.2.2
-  authSecret:
-    name: rd-auth-secret
-    kind: Secret
+  # authSecret:
+  #   name: rd-auth-secret
+  #   kind: Secret
     # externallyManaged: true
   configuration:
     inline:
       redis.conf: |-
+        databases 10
         maxclients 3000 
+
+
 
   # tls:
   #   issuerRef:  

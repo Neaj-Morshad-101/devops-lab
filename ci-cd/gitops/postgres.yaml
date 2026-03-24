@@ -21,11 +21,13 @@ spec:
   #       memory: 256Mi
   #       storage: 5Gi
   deletionPolicy: Delete
-  # configuration:
-  #   secretName: pg-configuration
-  #   inline:
-  #     user.conf: |
-  #       wal_level = logical
+  configuration:
+    # secretName: pg-configuration
+    inline:
+      user.conf: |
+        wal_level = logical
+        max_connections=300
+        shared_buffers=256MB
   # healthChecker:
   #   failureThreshold: 2
   #   periodSeconds: 10
@@ -68,22 +70,22 @@ spec:
   #     podPlacementPolicy:
   #       name: default
   replicas: 1
-  sslMode: require # require # verify-full
-  clientAuthMode: scram
-  tls:
-    issuerRef:
-      apiGroup: cert-manager.io
-      name: mssqlserver-ca-issuer
-      kind: Issuer
-    certificates:
-    - alias: server
-      subject:
-        organizations:
-        - kubedb:server
-      dnsNames:
-      - localhost
-      ipAddresses:
-      - "127.0.0.1" 
+  # sslMode: require # require # verify-full
+  # clientAuthMode: scram
+  # tls:
+  #   issuerRef:
+  #     apiGroup: cert-manager.io
+  #     name: mssqlserver-ca-issuer
+  #     kind: Issuer
+  #   certificates:
+  #   - alias: server
+  #     subject:
+  #       organizations:
+  #       - kubedb:server
+  #     dnsNames:
+  #     - localhost
+  #     ipAddresses:
+  #     - "127.0.0.1" 
   # standbyMode: Hot
   storage:
     accessModes:
