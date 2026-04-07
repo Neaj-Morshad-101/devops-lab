@@ -64,6 +64,22 @@ spec:
   resources:
   - apiGroup: autoscaling.kubedb.com
     # Omitting 'kind' shards ALL autoscaler types
+
+---
+
+apiVersion: operator.k8s.appscode.com/v1alpha1
+kind: ShardConfiguration
+metadata:
+  name: kubedb-autoscaler
+spec:
+  controllers:
+  - apiGroup: apps
+    kind: StatefulSet
+    name: kubedb-autoscaler
+    namespace: kubedb
+  resources:
+  - apiGroup: autoscaling.kubedb.com
+    # Omitting 'kind' shards ALL autoscaler types
 ```
 
 Apply it:

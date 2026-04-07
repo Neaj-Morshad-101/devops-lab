@@ -103,8 +103,8 @@ helm upgrade -i kubedb oci://ghcr.io/appscode-charts/kubedb \
         --version v2026.1.19 \
         --namespace kubedb --create-namespace \
         --set operator-shard-manager.enabled=true \
-        --set kubedb-provisioner.replicaCount=3 \
-        --set-file global.license=$HOME/Downloads/neaj-hanadb-license.txt \
+        --set kubedb-autoscaler.replicaCount=3 \
+        --set-file global.license=$HOME/Downloads/kind-license.txt \
         --wait --burst-limit=10000 --debug
 
 kubectl patch sts kubedb-kubedb-provisioner -n kubedb --type='merge' -p '{
@@ -146,8 +146,8 @@ kubectl get crd -o name | grep kubedb.com | xargs kubectl delete
 Install Petset:
 helm repo add appscode https://charts.appscode.com/stable/
 helm repo update
-helm search repo appscode/petset --version=v2026.1.15
-helm install petset appscode/petset -n kubeops --create-namespace --version=v2026.1.15
+helm search repo appscode/petset --version=v2026.2.16
+helm install petset appscode/petset -n kubeops --create-namespace --version=v2026.2.16
 
 
 

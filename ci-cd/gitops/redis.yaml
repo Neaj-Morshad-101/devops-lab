@@ -41,17 +41,17 @@ spec:
           limits:
             cpu: "200m"
             memory: "200Mi"
-  # monitor:
-  #   agent: prometheus.io/operator
-  #   prometheus:
-  #     exporter:
-  #       resources:
-  #         requests:
-  #           cpu: "150m"
-  #           memory: "150Mi"
-  #     serviceMonitor:
-  #       labels:
-  #         release: prometheus
-  #       interval: 10s
+  monitor:
+    agent: prometheus.io/operator
+    prometheus:
+      exporter:
+        resources:
+          requests:
+            cpu: "150m"
+            memory: "150Mi"
+      serviceMonitor:
+        labels:
+          release: prometheus
+        interval: 10s
   deletionPolicy: WipeOut
 

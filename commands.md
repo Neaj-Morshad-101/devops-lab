@@ -18,6 +18,11 @@ pod logs:
 `kubectl logs <db-pod-0> -n <db-namespace> --all-containers=true`
 kubectl get datastore -A
 
+Remove image from node:
+➤ docker exec -it kind-control-plane bash
+root@kind-control-plane:/# crictl rmi ghcr.io/kubedb/mssql-exporter:1.4.0
+Deleted: ghcr.io/kubedb/mssql-exporter:1.4.0
+
 
 # Docker 
 docker system prune --all

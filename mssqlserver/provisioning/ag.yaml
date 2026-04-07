@@ -4,21 +4,29 @@ metadata:
   name: ag
   namespace: demo
 spec:
-  version: "2022-cu12"
+  version: "2025-cu0"
   replicas: 3
   # authSecret:
   #   name: mssql-auth
   #   externallyManaged: true
   # configSecret:
   #   name: ms-custom-config
-  configuration:
-    secretName: ms-custom-config
-    inline:
-      mssql.conf: |-
-        [memory]
-        memorylimitmb = 2596
-        [network]
-        tcpport = 1433
+  # configuration:
+  #   secretName: ms-custom-config
+  #   inline:
+  #     mssql.conf: |-
+  #       [memory]
+  #       memorylimitmb = 2596
+  #       [network]
+  #       tcpport = 1433
+  arbiter:
+    resources:
+      limits:
+        memory: 256Mi
+      requests:
+        cpu: 200m
+        memory: 256Mi
+        storage: 5Gi
   topology:
     mode: AvailabilityGroup
     availabilityGroup: 
@@ -32,15 +40,21 @@ spec:
       kind: Issuer
       apiGroup: "cert-manager.io"
     clientTLS: false
-  # monitor:
-  #   agent: prometheus.io/operator
-  #   prometheus:
-  #     exporter:
-  #       port: 9399
-  #     serviceMonitor:
-  #       labels:
-  #         release: prometheus
-  #       interval: 10s
+  monitor:
+    agent: prometheus.io/operator
+    prometheus:
+      exporter:
+        port: 9399
+        resources:
+          limits:
+            memory: 512Mi
+          requests:
+            cpu: 200m
+            memory: 256Mi
+      serviceMonitor:
+        labels:
+          release: prometheus
+        interval: 10s
 
   # serviceTemplates:
   # - alias: primary
@@ -70,13 +84,18 @@ spec:
         resources:
           requests:
             cpu: "1.5"
-            memory: "2Gi"
+
+
+      - name: mssql-coordinator
+        env:
+        - name: GODEBUG
+          value: "x509negativeserial=1"
+        resources:
           limits:
-            memory: "4Gi"
-      # - name: mssql-coordinator
-      #   env:
-      #   - name: GODEBUG
-      #     value: "x509negativeserial=1"
+            memory: 256Mi
+          requests:
+            cpu: 200m
+            memory: 256Mi
   # serviceTemplates:
   # - alias: primary
   #   spec:

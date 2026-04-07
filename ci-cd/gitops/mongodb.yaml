@@ -1,0 +1,28 @@
+apiVersion: gitops.kubedb.com/v1alpha1
+kind: MongoDB
+metadata:
+ name: mg-gitops
+ namespace: demo
+spec:
+ version: "8.0.10"
+ replicaSet:
+   name: "replicaset"
+ replicas: 3
+ podTemplate:
+   spec:
+     containers:
+     - name: MongoDB
+       resources:
+         limits:
+           memory: 2Gi
+         requests:
+           cpu: 500m
+           memory: 1536Mi
+ storageType: Durable
+ storage:
+   # storageClassName: longhorn
+   accessModes:
+   - ReadWriteOnce
+   resources:
+     requests:
+       storage: 1Gi

@@ -6,15 +6,28 @@ metadata:
 spec:
   type: VerticalScaling
   databaseRef:
-    name: mssql-standalone
+    name: ag
   verticalScaling:
     mssqlserver:
       resources:
         requests:
-          memory: "2Gi"
-          cpu: 1
-        limits:
-          cpu: 2
           memory: "4Gi"
+          cpu: 2
+        limits:
+          memory: "4Gi"
+    coordinator:
+      resources:
+        limits:
+          memory: 512Mi
+        requests:
+          cpu: 500m
+          memory: 512Mi
+    arbiter:
+      resources:
+        limits:
+          memory: 512Mi
+        requests:
+          cpu: 500m
+          memory: 512Mi
   timeout: 2m
   apply: IfReady
