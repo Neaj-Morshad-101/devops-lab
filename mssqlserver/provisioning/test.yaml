@@ -1,50 +1,17 @@
-apiVersion: kubedb.com/v1alpha2
-kind: MSSQLServer
+apiVersion: chaos-mesh.org/v1alpha1
+kind: PodChaos
 metadata:
-  name: mssql-example-db
+  name: mssql-primary-pod-kill
+  namespace: chaos-mesh
 spec:
-  version: "2022-cu16"
-  replicas: 1 # <- OBS: Går ej att utöka efter installation så sätt detta rätt från början
-  authSecret:
-   name: kubedb-examples-db-auth # Sätts via ExternalSecret
-   externallyManaged: true
-  storageType: Durable
-  tls:
-    issuerRef:
-      name: mssqlserver-ca-issuer
-      kind: Issuer
-      apiGroup: "cert-manager.io"
-    clientTLS: false
-  podTemplate:
-    spec:
-      containers:
-        - name: mssql
-          env:
-            - name: ACCEPT_EULA
-              value: "Y"
-            - name: MSSQL_PID
-              value: Evaluation # Change it: Developer/Express/Web/Standard/Enterprise/EnterpriseCore
-          resources:
-            limits:
-              memory: "2Gi" # <- Kan behöva utökas beroende på behov
-            requests:
-              cpu: "300m"
-              memory: "1Gi"
-      initContainers:
-        - name: mssql-init
-          resources:
-            limits:
-              memory: 512Mi
-            requests:
-              cpu: 100m
-              memory: 256Mi
-  storage:
-    accessModes:
-      - ReadWriteOnce
-    resources:
-      requests:
-        storage: 1Gi
-  deletionPolicy: WipeOut # <- WipeOut betyder att pvc:n raderas när Databas-CR raderas (lämpligt för icke prod-dbs)
-                          #    Kan även sättas till DoNotTerminate, Delete, bl.a.
-
+  action: pod-kill
+  mode: one
+  selector:
+    namespaces:
+      - demo
+    labelSelectors:
+      app.kubernetes.io/instance: ag
+      kubedb.com/role: primary
+  gracePeriod: 0
+  duration: 10m
 

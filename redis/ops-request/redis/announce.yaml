@@ -1,0 +1,23 @@
+apiVersion: ops.kubedb.com/v1alpha1
+kind: RedisOpsRequest
+metadata:
+  name: redis-announce-0mous22222
+  namespace: demo
+spec:
+  announce:
+    shards:
+    - endpoints:
+      - 10.2.0.139:10000@10006
+      - 10.2.0.139:10001@10007
+    - endpoints:
+      - 10.2.0.139:10002@10008
+      - 10.2.0.139:10003@10009
+    - endpoints:
+      - 10.2.0.139:10004@10012
+      - 10.2.0.139:10005@10011
+    type: ip
+  apply: IfReady
+  databaseRef:
+    name: redis-announce
+  maxRetries: 1
+  type: Announce

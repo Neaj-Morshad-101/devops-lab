@@ -226,6 +226,13 @@ select database_id, group_id, replica_id, synchronization_state_desc, synchroniz
 SELECT replica_server_name, secondary_role_allow_connections_desc FROM sys.availability_replicas WHERE group_id = ( SELECT group_id FROM sys.availability_groups WHERE name = 'ag1' );
 SELECT ars.role_desc, ars.operational_state_desc FROM sys.dm_hadr_availability_replica_states AS ars INNER JOIN sys.availability_groups AS ag ON ars.group_id = ag.group_id 
 WHERE ars.is_local = 1  AND ars.role = 1 AND ag.name = N'ag1' AND ag.is_distributed = 0;
+/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P $MSSQL_SA_PASSWORD -No -Q "
+SELECT DB_NAME(database_id) AS database_name, 
+       synchronization_state_desc, 
+       synchronization_health_desc
+FROM sys.dm_hadr_database_replica_states;
+GO
+"
 
 Config Change: 
 ALTER AVAILABILITY GROUP [ag2] OFFLINE

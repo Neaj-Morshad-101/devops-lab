@@ -19,14 +19,14 @@ spec:
   #       memorylimitmb = 2596
   #       [network]
   #       tcpport = 1433
-  arbiter:
-    resources:
-      limits:
-        memory: 256Mi
-      requests:
-        cpu: 200m
-        memory: 256Mi
-        storage: 5Gi
+  # arbiter:
+  #   resources:
+  #     limits:
+  #       memory: 256Mi
+  #     requests:
+  #       cpu: 200m
+  #       memory: 256Mi
+  #       storage: 5Gi
   topology:
     mode: AvailabilityGroup
     availabilityGroup: 

@@ -1,16 +1,39 @@
 
 
+func EnsureMSSQLServerCRDs(crdClient crd_cs.Interface, removeUnusedCRDs bool) error {
+  crds := MSSQLServerSelfCRDs
+  if GitOpsEnabled {
+    crds = append(crds, toSlice(gitopsapi.MSSQLServer{}.CustomResourceDefinition())...)
+  }
+
+  if features.DefaultFeatureGate.Enabled(features.MSSQLServer) {
+    return apiextensions.RegisterWithOpts(crdClient, crds, preserveConversion)
+  } else if removeUnusedCRDs {
+    return safeDelete(crdClient, crds)
+  }
+  return nil
+}
 
 
 
 
 
+  MSSQLServerSelfCRDs = []*apiextensions.CustomResourceDefinition{
+    (&dbapi.MSSQLServer{}).CustomResourceDefinition(),
+    catalogapi.MSSQLServerVersion{}.CustomResourceDefinition(),
+    (&opsapi.MSSQLServerOpsRequest{}).CustomResourceDefinition(),
+    (&autoscalingapi.MSSQLServerAutoscaler{}).CustomResourceDefinition(),
+    bindapi.MSSQLServerBinding{}.CustomResourceDefinition(),
+    archiverapi.MSSQLServerArchiver{}.CustomResourceDefinition(),
+  }
 
 
 
 
-
-
+IgniteAutoscaler
+HazelcastAutoscaler
+Neo4jOpsRequest
+QdrantOpsRequest
 
 
 Kafka Schema registry: 
