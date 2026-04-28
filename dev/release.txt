@@ -1,7 +1,10 @@
 Responsible for DBs:
 development (primary):
-mssql # redis
-proxysql # kafka 
+mssql -> masood 
+redis -> hm  
+proxysql -> hm  
+gitops -> arman bhai 
+kafka -> masood
 
 
 memcached

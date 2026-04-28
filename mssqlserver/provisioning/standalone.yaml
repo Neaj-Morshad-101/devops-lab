@@ -1,7 +1,7 @@
 apiVersion: kubedb.com/v1alpha2
 kind: MSSQLServer
 metadata:
-  name: standalone
+  name: mssql-standalone
   namespace: demo
 spec:
   version: "2025-cu0"
@@ -37,27 +37,27 @@ spec:
   #   script:
   #     configMap:
   #       name: mssql-init-scripts
-  monitor:
-    agent: prometheus.io/operator
-    prometheus:
-      exporter:
-        port: 9399
-        # resources:
-        #   requests:
-        #     cpu: "1.5"
-        #     memory: "2Gi"
-        #   limits:
-        #     memory: "4Gi"
-        # resources:
-          # limits:
-          #   memory: 512Mi
-          # requests:
-          #   cpu: 200m
-          #   memory: 256Mi
-      serviceMonitor:
-        labels:
-          release: prometheus
-        interval: 10s
+  # monitor:
+  #   agent: prometheus.io/operator
+  #   prometheus:
+  #     exporter:
+  #       port: 9399
+  #       # resources:
+  #       #   requests:
+  #       #     cpu: "1.5"
+  #       #     memory: "2Gi"
+  #       #   limits:
+  #       #     memory: "4Gi"
+  #       # resources:
+  #         # limits:
+  #         #   memory: 512Mi
+  #         # requests:
+  #         #   cpu: 200m
+  #         #   memory: 256Mi
+  #     serviceMonitor:
+  #       labels:
+  #         release: prometheus
+  #       interval: 10s
   storage:
     # storageClassName: "longhorn"
     accessModes:

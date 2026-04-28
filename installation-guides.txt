@@ -3,8 +3,8 @@
 kubectl get ns kube-system -o=jsonpath='{.metadata.uid}'
 
 
-export KUBECONFIG=/home/neaj/Downloads/neaj-hanadb-kubeconfig.yaml
-export LICENSE_FILE=$HOME/Downloads/neaj-hanadb-license.txt
+export KUBECONFIG=/home/neaj/Downloads/neaj-kubeconfig.yaml
+export LICENSE_FILE=$HOME/Downloads/neaj-license.txt
 
 export REGISTRY=neajmorshad
 export LICENSE_FILE=$HOME/Downloads/kind-license.txt
@@ -32,42 +32,83 @@ make deploy-to-kind
 
 Install KubeDB:
 helm install kubedb oci://ghcr.io/appscode-charts/kubedb \
-          --version v2026.1.19 \
+          --version v2026.4.13-rc.0 \
           --namespace kubedb --create-namespace \
-          --set-file global.license=$HOME/Downloads/neaj-hanadb-license.txt \
-          --set global.featureGates.Cassandra=true         \
-          --set global.featureGates.ClickHouse=true        \
-          --set global.featureGates.DB2=true               \
-          --set global.featureGates.Druid=true             \
-          --set global.featureGates.Elasticsearch=true     \
-          --set global.featureGates.FerretDB=true          \
-          --set global.featureGates.HanaDB=true            \
-          --set global.featureGates.Hazelcast=true         \
-          --set global.featureGates.Ignite=true            \
-          --set global.featureGates.Kafka=true             \
-          --set global.featureGates.MariaDB=true           \
-          --set global.featureGates.Memcached=true         \
-          --set global.featureGates.Milvus=true            \
-          --set global.featureGates.MongoDB=true           \
-          --set global.featureGates.MSSQLServer=true       \
-          --set global.featureGates.MySQL=true             \
-          --set global.featureGates.Neo4j=true             \
-          --set global.featureGates.Oracle=true            \
-          --set global.featureGates.PerconaXtraDB=true     \
-          --set global.featureGates.PgBouncer=true         \
-          --set global.featureGates.Pgpool=true            \
-          --set global.featureGates.Postgres=true          \
-          --set global.featureGates.ProxySQL=true          \
-          --set global.featureGates.Qdrant=true            \
-          --set global.featureGates.RabbitMQ=true          \
-          --set global.featureGates.Redis=true             \
-          --set global.featureGates.Singlestore=true       \
-          --set global.featureGates.Solr=true              \
-          --set global.featureGates.Weaviate=true          \
-          --set global.featureGates.ZooKeeper=true         \
+          --set-file global.license=$HOME/Downloads/neaj-license.txt \
+          --set global.featureGates.Cassandra=true \
+          --set global.featureGates.ClickHouse=true \
+          --set global.featureGates.DB2=true \
+          --set global.featureGates.DocumentDB=true \
+          --set global.featureGates.Druid=true \
+          --set global.featureGates.Elasticsearch=true \
+          --set global.featureGates.FerretDB=true \
+          --set global.featureGates.HanaDB=true \
+          --set global.featureGates.Hazelcast=true \
+          --set global.featureGates.Ignite=true \
+          --set global.featureGates.Kafka=true \
+          --set global.featureGates.MariaDB=true \
+          --set global.featureGates.Memcached=true \
+          --set global.featureGates.Milvus=true \
+          --set global.featureGates.MongoDB=true \
+          --set global.featureGates.MSSQLServer=true \
+          --set global.featureGates.MySQL=true \
+          --set global.featureGates.Neo4j=true \
+          --set global.featureGates.Oracle=true \
+          --set global.featureGates.PerconaXtraDB=true \
+          --set global.featureGates.PgBouncer=true \
+          --set global.featureGates.Pgpool=true \
+          --set global.featureGates.Postgres=true \
+          --set global.featureGates.ProxySQL=true \
+          --set global.featureGates.Qdrant=true \
+          --set global.featureGates.RabbitMQ=true \
+          --set global.featureGates.Redis=true \
+          --set global.featureGates.Singlestore=true \
+          --set global.featureGates.Solr=true \
+          --set global.featureGates.Weaviate=true \
+          --set global.featureGates.ZooKeeper=true \
           --wait --timeout 15m0s --burst-limit=10000 --debug -f https://raw.githubusercontent.com/kubedb/installer/master/charts/kubedb/ci/ci-values.yaml
 
 
+
+
+helm upgrade -i kubedb oci://ghcr.io/appscode-charts/kubedb \
+          --version v2026.4.13-rc.0 \
+          --namespace kubedb --create-namespace \
+          --set operator-shard-manager.enabled=true \
+          --set kubedb-autoscaler.replicaCount=3 \
+          --set-file global.license=$HOME/Downloads/neaj-license.txt \
+          --set global.featureGates.Cassandra=true \
+          --set global.featureGates.ClickHouse=true \
+          --set global.featureGates.DB2=true \
+          --set global.featureGates.DocumentDB=true \
+          --set global.featureGates.Druid=true \
+          --set global.featureGates.Elasticsearch=true \
+          --set global.featureGates.FerretDB=true \
+          --set global.featureGates.HanaDB=true \
+          --set global.featureGates.Hazelcast=true \
+          --set global.featureGates.Ignite=true \
+          --set global.featureGates.Kafka=true \
+          --set global.featureGates.MariaDB=true \
+          --set global.featureGates.Memcached=true \
+          --set global.featureGates.Milvus=true \
+          --set global.featureGates.MongoDB=true \
+          --set global.featureGates.MSSQLServer=true \
+          --set global.featureGates.MySQL=true \
+          --set global.featureGates.Neo4j=true \
+          --set global.featureGates.Oracle=true \
+          --set global.featureGates.PerconaXtraDB=true \
+          --set global.featureGates.PgBouncer=true \
+          --set global.featureGates.Pgpool=true \
+          --set global.featureGates.Postgres=true \
+          --set global.featureGates.ProxySQL=true \
+          --set global.featureGates.Qdrant=true \
+          --set global.featureGates.RabbitMQ=true \
+          --set global.featureGates.Redis=true \
+          --set global.featureGates.Singlestore=true \
+          --set global.featureGates.Solr=true \
+          --set global.featureGates.Weaviate=true \
+          --set global.featureGates.ZooKeeper=true \
+          --wait --timeout 15m0s --burst-limit=10000 --debug -f https://raw.githubusercontent.com/kubedb/installer/master/charts/kubedb/ci/ci-values.yaml
 
 
 
@@ -107,7 +148,7 @@ helm upgrade -i kubedb oci://ghcr.io/appscode-charts/kubedb \
         --set-file global.license=$HOME/Downloads/kind-license.txt \
         --wait --burst-limit=10000 --debug
 
-kubectl patch sts kubedb-kubedb-provisioner -n kubedb --type='merge' -p '{
+kubectl patch sts kubedb-kubedb-autoscaler -n kubedb --type='merge' -p '{
   "spec": {
     "template": {
       "spec": {
@@ -120,7 +161,7 @@ kubectl patch sts kubedb-kubedb-provisioner -n kubedb --type='merge' -p '{
                   "labelSelector": {
                     "matchLabels": {
                       "app.kubernetes.io/instance": "kubedb",
-                      "app.kubernetes.io/name": "kubedb-provisioner"
+                      "app.kubernetes.io/name": "kubedb-autoscaler"
                     }
                   },
                   "topologyKey": "kubernetes.io/hostname"

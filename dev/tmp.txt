@@ -1,5 +1,15 @@
 
 
+
+
+
+
+
+
+
+
+
+
 func EnsureMSSQLServerCRDs(crdClient crd_cs.Interface, removeUnusedCRDs bool) error {
   crds := MSSQLServerSelfCRDs
   if GitOpsEnabled {
