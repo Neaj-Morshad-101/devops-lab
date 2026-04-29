@@ -1,0 +1,138 @@
+6Gi in ops though maxAllowed is 4Gi, Also same ops being generated again and again 
+
+➤ kubectl get msops -n demo msops-mssql-ag-a44vds -oyaml
+apiVersion: ops.kubedb.com/v1alpha1
+kind: MSSQLServerOpsRequest
+metadata:
+  creationTimestamp: "2026-04-29T11:48:28Z"
+  generation: 1
+  labels:
+    app.kubernetes.io/component: database
+    app.kubernetes.io/instance: mssql-ag
+    app.kubernetes.io/managed-by: kubedb.com
+    app.kubernetes.io/name: mssqlservers.kubedb.com
+  name: msops-mssql-ag-a44vds
+  namespace: demo
+  ownerReferences:
+  - apiVersion: autoscaling.kubedb.com/v1alpha1
+    blockOwnerDeletion: true
+    controller: true
+    kind: MSSQLServerAutoscaler
+    name: third-mssqlserver-autoscaler
+    uid: a5a4bd5b-a3fe-46cf-a5d2-b17d70e7f82e
+  resourceVersion: "274289"
+  uid: c8d21e42-4319-4a9b-88e7-b13fdd7eaccc
+spec:
+  apply: IfReady
+  databaseRef:
+    name: mssql-ag
+  maxRetries: 1
+  type: VerticalScaling
+  verticalScaling:
+    mssqlserver:
+      resources:
+        limits:
+          memory: 6Gi
+        requests:
+          cpu: "2"
+          memory: 3Gi
+
+
+
+
+
+➤ kubectl get msscaler -n demo first-mssql-autoscaler-first -oyaml
+apiVersion: autoscaling.kubedb.com/v1alpha1
+kind: MSSQLServerAutoscaler
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"autoscaling.kubedb.com/v1alpha1","kind":"MSSQLServerAutoscaler","metadata":{"annotations":{},"name":"first-mssql-autoscaler-first","namespace":"demo"},"spec":{"compute":{"mssqlserver":{"containerControlledValues":"RequestsAndLimits","controlledResources":["cpu","memory"],"maxAllowed":{"cpu":"3000m","memory":"4Gi"},"minAllowed":{"cpu":"2000m","memory":"3Gi"},"podLifeTimeThreshold":"5m","resourceDiffPercentage":10,"trigger":"On"}},"databaseRef":{"name":"mssql-standalone"}}}
+  creationTimestamp: "2026-04-28T14:00:39Z"
+  generation: 1
+  labels:
+    shard.operator.k8s.appscode.com/kubedb-autoscaler: "2"
+  name: first-mssql-autoscaler-first
+  namespace: demo
+  resourceVersion: "274239"
+  uid: 996369b3-4c42-4f56-8ea3-512455513acc
+spec:
+  compute:
+    mssqlserver:
+      containerControlledValues: RequestsAndLimits
+      controlledResources:
+      - cpu
+      - memory
+      maxAllowed:
+        cpu: "3"
+        memory: 4Gi
+      minAllowed:
+        cpu: "2"
+        memory: 3Gi
+      podLifeTimeThreshold: 5m0s
+      resourceDiffPercentage: 10
+      trigger: "On"
+  databaseRef:
+    name: mssql-standalone
+  opsRequestOptions:
+    apply: IfReady
+status:
+  checkpoints:
+  - cpuHistogram:
+      bucketWeights:
+      - index: 1
+        weight: 6139
+      - index: 2
+        weight: 7426
+      - index: 3
+        weight: 10000
+      - index: 10
+        weight: 1701
+      - index: 24
+        weight: 858
+      referenceTimestamp: "2026-04-29T11:40:00Z"
+      totalWeight: 2.827209172885642
+    firstSampleStart: "2026-04-29T11:37:25Z"
+    lastSampleStart: "2026-04-29T11:50:25Z"
+    lastUpdateTime: "2026-04-29T11:50:47Z"
+    memoryHistogram:
+      bucketWeights:
+      - index: 31
+        weight: 10000
+      - index: 35
+        weight: 2095
+      referenceTimestamp: "2026-04-29T11:40:00Z"
+      totalWeight: 7.0251944767329375
+    ref:
+      containerName: mssql
+      vpaObjectName: mssql-standalone
+    totalSamplesCount: 14
+    version: v3
+  conditions:
+  - lastTransitionTime: "2026-04-29T11:38:28Z"
+    message: Successfully created MSSQLServerOpsRequest demo/msops-mssql-standalone-gqvtni
+    observedGeneration: 1
+    reason: CreateOpsRequest
+    status: "True"
+    type: CreateOpsRequest
+  vpas:
+  - conditions:
+    - lastTransitionTime: "2026-04-29T11:37:46Z"
+      status: "True"
+      type: RecommendationProvided
+    recommendation:
+      containerRecommendations:
+      - containerName: mssql
+        lowerBound:
+          cpu: "2"
+          memory: 3Gi
+        target:
+          cpu: "2"
+          memory: 3Gi
+        uncappedTarget:
+          cpu: 100m
+          memory: "920733364"
+        upperBound:
+          cpu: "3"
+          memory: 4Gi
+    vpaName: mssql-standalone

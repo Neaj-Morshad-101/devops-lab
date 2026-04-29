@@ -1,0 +1,65 @@
+apiVersion: autoscaling.kubedb.com/v1alpha1
+kind: MSSQLServerAutoscaler
+metadata:
+  name: first-mssql-autoscaler-first
+  namespace: demo
+spec:
+  databaseRef:
+    name: mssql-standalone
+  compute:
+    mssqlserver:
+      trigger: "On"
+      podLifeTimeThreshold: 5m
+      resourceDiffPercentage: 10
+      minAllowed:
+        cpu: 2000m
+        memory: 3Gi
+      maxAllowed:
+        cpu: 3000m
+        memory: 4Gi
+      containerControlledValues: "RequestsAndLimits"
+      controlledResources: [ "cpu", "memory" ]
+---
+apiVersion: autoscaling.kubedb.com/v1alpha1
+kind: MSSQLServerAutoscaler
+metadata:
+  name: ms-auto-scaler-2
+  namespace: demo
+spec:
+  databaseRef:
+    name: mssql-std
+  compute:
+    mssqlserver:
+      trigger: "On"
+      podLifeTimeThreshold: 5m
+      resourceDiffPercentage: 10
+      minAllowed:
+        cpu: 2000m
+        memory: 3Gi
+      maxAllowed:
+        cpu: 3000m
+        memory: 4Gi
+      containerControlledValues: "RequestsAndLimits"
+      controlledResources: [ "cpu", "memory" ]
+---
+apiVersion: autoscaling.kubedb.com/v1alpha1
+kind: MSSQLServerAutoscaler
+metadata:
+  name: third-mssqlserver-autoscaler
+  namespace: demo
+spec:
+  databaseRef:
+    name: mssql-ag
+  compute:
+    mssqlserver:
+      trigger: "On"
+      podLifeTimeThreshold: 5m
+      resourceDiffPercentage: 10
+      minAllowed:
+        cpu: 2000m
+        memory: 3Gi
+      maxAllowed:
+        cpu: 3000m
+        memory: 4Gi
+      containerControlledValues: "RequestsAndLimits"
+      controlledResources: ["cpu", "memory"]

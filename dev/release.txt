@@ -1,11 +1,11 @@
 Responsible for DBs:
 development (primary):
 mssql -> masood 
-redis -> hm  
 proxysql -> hm  
 gitops -> arman bhai 
-kafka -> masood
 
+kafka -> masood
+redis -> hm  
 
 memcached
 ignite 

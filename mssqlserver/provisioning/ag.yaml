@@ -1,7 +1,7 @@
 apiVersion: kubedb.com/v1alpha2
 kind: MSSQLServer
 metadata:
-  name: mssgl-ag
+  name: mssql-ag
   namespace: demo
 spec:
   version: "2025-cu0"
@@ -80,9 +80,9 @@ spec:
           value: "Y"
         - name: MSSQL_PID
           value: Evaluation
-        resources:
-          requests:
-            cpu: "1.5"
+        # resources:
+        #   requests:
+        #     cpu: "1.5"
 
 
       - name: mssql-coordinator
