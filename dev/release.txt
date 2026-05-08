@@ -1,13 +1,17 @@
 Responsible for DBs:
 development (primary):
 mssql -> masood 
-proxysql -> hm  
-gitops -> arman bhai 
+proxysql -> hironmoy
+gitops -> arman/hironmoy bhai 
 
+already assigned:
 kafka -> masood
 redis -> hm  
+memcached -> zobayer
+etc. 
 
-memcached
+For Secondary role (reviews): Distribute among Arman, Saurov, Hironmay, etc. 
+
 ignite 
 rabbitmq
 

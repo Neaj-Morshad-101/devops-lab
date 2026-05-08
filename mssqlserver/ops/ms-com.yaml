@@ -5,10 +5,10 @@ metadata:
   namespace: demo
 spec:
   databaseRef:
-    name: mssqlserver-ag-cluster
+    name: mssql-ag
   opsRequestOptions:
-    timeout: 5m
-    apply: IfReady
+    # timeout: 5m
+    # apply: IfReady
   compute:
     mssqlserver:
       trigger: "On"
