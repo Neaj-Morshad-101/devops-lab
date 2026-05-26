@@ -1,8 +1,8 @@
 Responsible for DBs:
 development (primary):
-mssql -> masood 
-proxysql -> hironmoy
-gitops -> arman/hironmoy bhai 
+mssql -> hiranmoy 
+proxysql -> refat
+done: gitops -> arman bhai 
 
 already assigned:
 kafka -> masood

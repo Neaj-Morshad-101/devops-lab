@@ -1,6 +1,63 @@
 
 
 
+Knowledge transfer notes:
+**Resources:**
+Official docs: 
+SQL Server on Linux: https://learn.microsoft.com/en-us/sql/linux/sql-server-linux-overview?view=sql-server-ver17
+
+You can explore webinars, docs, kubedb/kb repo resouces, etc.
+
+Raft:
+theory: 
+https://raft.github.io/
+https://www.youtube.com/watch?v=IujMVjKvWP4
+codebase explanation: 
+https://drive.google.com/drive/folders/1NNO200IXsfh-NKHqfaCJ9EEJPRDu1N-P
+
+addition links:
+https://github.com/kubeops/csi-driver-cacerts
+image registry: https://mcr.microsoft.com/en-us/artifact/mar/mssql/server
+
+Codebases explanation sessions: we have covered apimachienry, mssqlserver (with ops), mssql-coordinator, mssql-init-docker, mssqlserver_exporter, kubedb/kb etc repos.
+Recorded sessions: Please share that in this space @
+
+
+
+
+
+client: mTLS 
+server: hanatls config
+exporter: tls.crt, tls.key, ca.crt 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

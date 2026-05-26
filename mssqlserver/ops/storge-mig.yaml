@@ -1,0 +1,13 @@
+apiVersion: ops.kubedb.com/v1alpha1
+kind: MSSQLServerOpsRequest
+metadata:
+  name: storage-migration
+  namespace: demo
+spec:
+  type: StorageMigration
+  databaseRef:
+    name: mssql-ag
+  migration:
+    storageClassName: custom-longhorn
+    oldPVReclaimPolicy: Delete
+  timeout: 300m

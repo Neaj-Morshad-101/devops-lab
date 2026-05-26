@@ -72,11 +72,11 @@ helm install kubedb oci://ghcr.io/appscode-charts/kubedb \
 
 
 helm upgrade -i kubedb oci://ghcr.io/appscode-charts/kubedb \
-          --version v2026.4.13-rc.0 \
+          --version v2026.4.27 \
           --namespace kubedb --create-namespace \
           --set operator-shard-manager.enabled=true \
-          --set kubedb-autoscaler.replicaCount=3 \
-          --set-file global.license=$HOME/Downloads/neaj-license.txt \
+          --set kubedb-autoscaler.replicaCount=1 \
+          --set-file global.license=$HOME/Downloads/ak8sdb-license.txt \
           --set global.featureGates.Cassandra=true \
           --set global.featureGates.ClickHouse=true \
           --set global.featureGates.DB2=true \
