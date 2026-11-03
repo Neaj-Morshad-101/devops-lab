@@ -1,0 +1,1 @@
+export KUBECONFIG=/home/neaj/kubeconfigs/neaj-ace.yaml
